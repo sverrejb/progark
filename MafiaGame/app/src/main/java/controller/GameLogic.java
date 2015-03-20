@@ -10,6 +10,8 @@ import models.Player;
 public class GameLogic {
     Player[] playersInGame;
 
+    Player[] killList;
+
 
     public void assignPlayers() {
         ArrayList<Player> unAssignedPlayers = new ArrayList<Player>();
