@@ -45,7 +45,6 @@ public abstract class AbstractPhase {
     // of check here.
     public void onPhaseEnd() {
 
-
     }
 
     // Check to see if a specific role can participate in this phase
