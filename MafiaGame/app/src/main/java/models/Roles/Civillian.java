@@ -13,16 +13,14 @@ public class Civillian extends AbstractRole {
         super(gl);
         this.id = "civillian";
         this.displayName = "Civillian Phase";
-        this.notePerformer = false;
-    }
-
-    void performAction(Player performer, Player target) {
-        ensurePerformerNotNull(performer);
-
     }
 
     @Override
     void createCopy() {
+        Civillian newCopy = new Civillian(gl);
+        newCopy.id = id;
+        newCopy.displayName = displayName;
+
 
     }
 }

@@ -1,6 +1,7 @@
 package models.Phases;
 
 import controller.GameLogic;
+import models.Player;
 
 /**
  * Created by Daniel on 20.03.2015.
@@ -14,7 +15,9 @@ public class CivillianPhase extends AbstractPhase {
         phaseId = "civillian";
         phaseName = "Civillian Phase";
         order = 200f;
-        participateRoles[0] = "all";
+        participateRoles.add("all");
+        mandatory = true;
+        phaseMap.put(this.phaseId, this);
 
         // Uncomment this to allow the little girl to be a witness at observing if "littleGirl" is
         // a valid role
@@ -32,5 +35,10 @@ public class CivillianPhase extends AbstractPhase {
         newCopy.gl = gl;
 
         return newCopy;
+    }
+
+    @Override
+    void performAction(Player performer, Player target) {
+
     }
 }

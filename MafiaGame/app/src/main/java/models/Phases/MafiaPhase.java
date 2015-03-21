@@ -1,6 +1,7 @@
 package models.Phases;
 
 import controller.GameLogic;
+import models.Player;
 
 /**
  * Created by Daniel on 20.03.2015.
@@ -14,7 +15,9 @@ public class MafiaPhase extends AbstractPhase {
         phaseId = "mafia";
         phaseName = "Mafia Phase";
         order = 199f;
-        participateRoles[0] = "mafia";
+        participateRoles.add("mafia");
+        mandatory = true;
+        phaseMap.put(this.phaseId, this);
     }
 
     @Override
@@ -28,6 +31,11 @@ public class MafiaPhase extends AbstractPhase {
 
         return newCopy;
 
+
+    }
+
+    @Override
+    void performAction(Player performer, Player target) {
 
     }
 }
