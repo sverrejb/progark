@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import controller.GameLogic;
+import models.Player;
 import models.Roles.AbstractRole;
 
 /**
@@ -36,6 +37,11 @@ public abstract class AbstractPhase {
     String phaseName;
 
     float order;
+
+    // This is a special value and if set to true requires that a performer is not null when
+    // performing an action
+
+    boolean notePerformer;
 
     // A list of players that has been marked for elimination during this phase
 
@@ -84,6 +90,24 @@ public abstract class AbstractPhase {
         }
         return false;
 
+    }
+
+
+    // Executes the sub-class-specific action.
+    // performer is the player who has voted to perform the action.
+    // target is the targeted (the one with most votes) player.
+
+    void performAction(Player performer, Player target) {
+        ensurePerformerNotNull(performer);
+    }
+
+
+    // When notePerformer is true, performer can not be null.
+    public void ensurePerformerNotNull(Player performer) {
+        if(notePerformer && performer == null) {
+            throw new NullPointerException("Error in Phase: " + this.phaseId +
+                    "Performer can not be null for a performer-required action");
+        }
     }
 
 
