@@ -6,11 +6,15 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.multiplayer.Invitation;
+import com.google.android.gms.games.multiplayer.Multiplayer;
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 
 /**
  * Created by Perÿyvind on 23/03/2015.
@@ -43,9 +47,7 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
      */
     private boolean mIsInResolution;
 
-
     protected boolean mClientIsConnected = false;
-
 
     /**
      * Called when the activity is starting. Restores the activity state.
@@ -140,6 +142,25 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
 
         // TODO: Start making API requests.
         mClientIsConnected = true;
+
+        // Are we allready invited?
+        if (connectionHint != null) {
+            Invitation inv =
+                    connectionHint.getParcelable(Multiplayer.EXTRA_INVITATION);
+
+            if (inv != null) {
+                // accept invitation
+                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+                roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
+                Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
+
+                // prevent screen from sleeping during handshake
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+                // todo go to game screen
+            }
+        }
+
     }
 
     /**

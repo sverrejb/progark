@@ -15,6 +15,9 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.multiplayer.Multiplayer;
+import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
@@ -25,7 +28,6 @@ import java.util.List;
 
 import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.activities.IPlayStoreActivity;
-import progark.mafia.mafiagame.connection.MessageReceiver;
 import progark.mafia.mafiagame.utils.Constants;
 
 /**
@@ -44,6 +46,14 @@ public class MainMenuFragment extends Fragment implements
      * The Game room, null if we are not playing.
      */
     String mRoomId = null;
+
+    // The participants in the currently active game
+    ArrayList<Participant> mParticipants = null;
+
+
+    // My participant ID in the currently active game
+    String mMyId = null;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,7 +140,8 @@ public class MainMenuFragment extends Fragment implements
                 }
                 else if (resultCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
                     // player wants to leave the room.
-                    Games.RealTimeMultiplayer.leave(mPlayStoreActivity.getGoogleApiClient(), null, mRoomId);
+                    // todo "this" could to be null
+                    Games.RealTimeMultiplayer.leave(mPlayStoreActivity.getGoogleApiClient(), this, mRoomId);
                     getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 }
                 break;
@@ -140,7 +151,12 @@ public class MainMenuFragment extends Fragment implements
     // create a RoomConfigBuilder that's appropriate for your implementation
     private RoomConfig.Builder makeBasicRoomConfigBuilder() {
         return RoomConfig.builder(this)
-                .setMessageReceivedListener(new MessageReceiver())
+                .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
+                    @Override
+                    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+                        //todo not use this BS
+                    }
+                })
                 .setRoomStatusUpdateListener(this);
     }
 
@@ -199,7 +215,6 @@ public class MainMenuFragment extends Fragment implements
                 // let screen go to sleep
                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
                 // get waiting room intent
                 Intent i = Games.RealTimeMultiplayer.getWaitingRoomIntent(mPlayStoreActivity.getGoogleApiClient(), room, Integer.MAX_VALUE);
                 startActivityForResult(i, Constants.REQUEST_CODE_WAITING_ROOM);
@@ -218,6 +233,8 @@ public class MainMenuFragment extends Fragment implements
             case GamesStatusCodes.STATUS_OK:
                 // let screen go to sleep
                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                Log.v(TAG, "\"Left Room\"");
+                // todo return to main menu
                 break;
             // Something is wrong
             default:
@@ -232,6 +249,8 @@ public class MainMenuFragment extends Fragment implements
             case GamesStatusCodes.STATUS_OK:
                 // let screen go to sleep
                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                updateRoom(room);
+
                 break;
             // Something is wrong
             default:
@@ -247,61 +266,79 @@ public class MainMenuFragment extends Fragment implements
 
     @Override
     public void onRoomConnecting(Room room) {
-
+        updateRoom(room);
     }
 
     @Override
     public void onRoomAutoMatching(Room room) {
-
+        updateRoom(room);
     }
 
     @Override
     public void onPeerInvitedToRoom(Room room, List<String> list) {
-
+        updateRoom(room);
     }
 
     @Override
     public void onPeerDeclined(Room room, List<String> list) {
-
+        updateRoom(room);
     }
 
     @Override
     public void onPeerJoined(Room room, List<String> list) {
-
+        updateRoom(room);
     }
 
     @Override
     public void onPeerLeft(Room room, List<String> list) {
-
+        updateRoom(room);
     }
 
     @Override
     public void onConnectedToRoom(Room room) {
-
+        // get room ID, participants and my ID:
+        mRoomId = room.getRoomId();
+        mParticipants = room.getParticipants();
+        mMyId = room.getParticipantId(Games.Players.getCurrentPlayerId(mPlayStoreActivity.getGoogleApiClient()));
+// print out the list of participants (for debug purposes)
+        Log.d(TAG, "Room ID: " + mRoomId);
+        Log.d(TAG, "My ID " + mMyId);
+        Log.d(TAG, "<< CONNECTED TO ROOM>>");
     }
 
     @Override
     public void onDisconnectedFromRoom(Room room) {
-
+        mRoomId = null;
+        //todo return to main screen.
     }
 
     @Override
     public void onPeersConnected(Room room, List<String> list) {
-
+        updateRoom(room);
     }
 
     @Override
     public void onPeersDisconnected(Room room, List<String> list) {
-
+        updateRoom(room);
     }
 
     @Override
-    public void onP2PConnected(String s) {
-
-    }
+    public void onP2PConnected(String s) {}
 
     @Override
-    public void onP2PDisconnected(String s) {
+    public void onP2PDisconnected(String s) {}
 
+
+    // --------------------------------------------------
+    // Other helper methods
+    // --------------------------------------------------
+
+    void updateRoom(Room room) {
+        if (room != null) {
+            mParticipants = room.getParticipants();
+        }
+        //if (mParticipants != null) {
+        //    updatePeerScoresDisplay();
+        //}
     }
 }
