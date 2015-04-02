@@ -93,12 +93,6 @@ public abstract class AbstractPhase {
         return this.phaseId;
     }
 
-
-
-
-
-
-
     // Parent method that fires when the phase begins. Add any code to any child that requires some kind
     // of check here.
     public void onPhaseBegin() {
@@ -126,7 +120,7 @@ public abstract class AbstractPhase {
 
     }
 
-    // Methods for disabling and enabling roles
+    // Methods for disabling and enabling roles. Disabling mandatory phases are not allowed.
     public void disable() throws Exception {
         if(!mandatory) {
             this.enabled = false;
