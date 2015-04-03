@@ -14,12 +14,26 @@ import models.Roles.Civillian;
  */
 public class GameLogic {
     Player[] playersInGame;
+    boolean includeGameMaster;
 
-    Player[] killList;
+    public static Player[] killList;
 
 
     public void assignPlayers() {
         ArrayList<Player> unAssignedPlayers = new ArrayList<Player>();
+
+    }
+
+    public void addPlayer(String id, String name) {
+        Player p = new Player(id, name);
+    }
+
+
+    // Method used to update all current tentative actions, such as killing off players and updating players
+    // on progress. commitRound() should either be performed after all phases of a round has finished OR
+    // on special occasions during the onePhaseEnd method in the phase class.
+
+    public void commitRound() {
 
     }
 

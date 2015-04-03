@@ -33,12 +33,18 @@ public class CivillianPhase extends AbstractPhase {
         newCopy.order = order;
         newCopy.participateRoles = participateRoles;
         newCopy.gl = gl;
-
         return newCopy;
     }
 
     @Override
     void performAction(Player performer, Player target) {
 
+
     }
+
+    public void onPhaseEnd() {
+        gl.commitRound();
+    }
+
+
 }

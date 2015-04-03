@@ -32,8 +32,10 @@ public abstract class AbstractPhase {
     // Note that all participants should automatically be considered observants
     ArrayList<String> observeRoles;
 
+    // The id of the phase.
     String phaseId;
 
+    // The name of the phase.
     String phaseName;
 
     // Value for including this phase in the game.
@@ -42,6 +44,7 @@ public abstract class AbstractPhase {
     // Value for checking mandatory. Mandatory phases cannot be disabled.
     boolean mandatory = false;
 
+    // The order this phase happens in the list of phases.
     float order;
 
     // This is a special value and if set to true requires that a performer is not null when
@@ -62,7 +65,7 @@ public abstract class AbstractPhase {
 
     }
     // Default constructor.
-    public AbstractPhase(GameLogic gl) {
+    AbstractPhase(GameLogic gl) {
         this.gl = gl;
         participateRoles = new ArrayList<String>();
         observeRoles = new ArrayList<String>();
@@ -76,15 +79,17 @@ public abstract class AbstractPhase {
     // target is the targeted (the one with most votes) player.
     abstract void performAction(Player performer, Player target);
 
-
+    // Returns all phases in play.
     public static ArrayList<AbstractPhase> getPhases() {
         return phases;
     }
 
+    // Returns all roles that can participate in this phase
     public ArrayList<String> getParticipatingRoles() {
         return participateRoles;
     }
 
+    // Returns all roles that can observe (but not participate) in this phase
     public ArrayList<String> getObserveRoles() {
         return observeRoles;
     }
@@ -159,4 +164,5 @@ public abstract class AbstractPhase {
         return false;
 
     }
+
 }

@@ -25,9 +25,13 @@ public abstract class AbstractRole {
     boolean enabled;
     boolean mandatory;
 
+    abstract int getNumberInplay();
+
+    abstract int getMaxNumber();
 
 
-    public AbstractRole(GameLogic gl, String id, String displayName) {
+
+    AbstractRole(GameLogic gl, String id, String displayName) {
         this.gl = gl;
         this.id = id;
         this.displayName = displayName;

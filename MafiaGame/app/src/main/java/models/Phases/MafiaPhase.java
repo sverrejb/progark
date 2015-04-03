@@ -30,8 +30,6 @@ public class MafiaPhase extends AbstractPhase {
         newCopy.gl = gl;
 
         return newCopy;
-
-
     }
 
     @Override

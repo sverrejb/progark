@@ -1,17 +1,25 @@
 package progark.mafia.mafiagame;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import progark.mafia.mafiagame.activities.BasePlayStoreActivity;
 
 
-public class MainMenu extends ActionBarActivity {
+public class Main extends BasePlayStoreActivity {
+    private static final String TAG = BasePlayStoreActivity.class.getSimpleName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_menu);
+        setContentView(R.layout.activity_main);
     }
 
 
@@ -36,4 +44,5 @@ public class MainMenu extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
