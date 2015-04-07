@@ -1,6 +1,6 @@
-package models;
+package progark.mafia.mafiagame.models;
 
-import models.Roles.AbstractRole;
+import progark.mafia.mafiagame.models.Roles.AbstractRole;
 
 /**
  * Created by Daniel on 10.03.2015.

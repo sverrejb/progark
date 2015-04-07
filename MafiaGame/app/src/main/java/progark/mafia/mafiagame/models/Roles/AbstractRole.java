@@ -1,11 +1,10 @@
-package models.Roles;
+package progark.mafia.mafiagame.models.Roles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import controller.GameLogic;
-import models.Phases.AbstractPhase;
+import progark.mafia.mafiagame.controller.GameLogic;
 
 /**
  * Created by Daniel on 10.03.2015.

@@ -1,22 +1,21 @@
-package controller;
+package progark.mafia.mafiagame.controller;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
 
-import com.google.android.gms.games.Game;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import models.Phases.AbstractPhase;
-import models.Phases.CivillianPhase;
-import models.Phases.MafiaPhase;
-import models.Player;
-import models.Roles.AbstractRole;
-import models.Roles.Civillian;
+
 import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.fragments.GameFragment;
+import progark.mafia.mafiagame.models.Phases.AbstractPhase;
+import progark.mafia.mafiagame.models.Phases.CivillianPhase;
+import progark.mafia.mafiagame.models.Phases.MafiaPhase;
+import progark.mafia.mafiagame.models.Player;
+import progark.mafia.mafiagame.models.Roles.AbstractRole;
+import progark.mafia.mafiagame.models.Roles.Civillian;
 
 /**
  * Created by Daniel on 10.03.2015.

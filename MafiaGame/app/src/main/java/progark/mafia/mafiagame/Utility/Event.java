@@ -1,4 +1,4 @@
-package Utility;
+package progark.mafia.mafiagame.utility;
 
 import java.util.Map;
 

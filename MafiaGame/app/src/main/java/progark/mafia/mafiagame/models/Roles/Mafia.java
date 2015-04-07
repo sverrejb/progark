@@ -1,6 +1,6 @@
-package models.Roles;
+package progark.mafia.mafiagame.models.Roles;
 
-import controller.GameLogic;
+import progark.mafia.mafiagame.controller.GameLogic;
 
 /**
  * Created by Daniel on 20.03.2015.

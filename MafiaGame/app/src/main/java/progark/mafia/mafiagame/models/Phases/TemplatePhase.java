@@ -1,7 +1,7 @@
-package models.Phases;
+package progark.mafia.mafiagame.models.Phases;
 
-import controller.GameLogic;
-import models.Player;
+import progark.mafia.mafiagame.controller.GameLogic;
+import progark.mafia.mafiagame.models.Player;
 
 /**
  * Created by Daniel on 20.03.2015.

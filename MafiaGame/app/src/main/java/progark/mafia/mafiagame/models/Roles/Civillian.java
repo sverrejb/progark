@@ -1,14 +1,14 @@
-package models.Roles;
+package progark.mafia.mafiagame.models.Roles;
 
-import controller.GameLogic;
+import progark.mafia.mafiagame.controller.GameLogic;
 
 /**
  * Created by Daniel on 20.03.2015.
  */
-public class Doctor extends AbstractRole {
+public class Civillian extends AbstractRole {
 
     static int numberInPlay = 0;
-    final static int MAX_NUMBER = 1;
+    final static int MAX_NUMBER = 0;
 
 
     @Override
@@ -21,16 +21,20 @@ public class Doctor extends AbstractRole {
         return MAX_NUMBER;
     }
 
-    Doctor(GameLogic gl) {
+    public Civillian(GameLogic gl) {
         super(gl);
-        this.id = "doctor";
-        this.displayName = "Doctor";
+        this.id = "civillian";
+        this.displayName = "Civillian";
     }
 
     @Override
     void createCopy() {
-        Doctor newCopy = new Doctor(gl);
+        Civillian newCopy = new Civillian(gl);
         newCopy.id = id;
         newCopy.displayName = displayName;
+
+
     }
+
+
 }
