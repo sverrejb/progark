@@ -250,8 +250,7 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
 
             if (inv != null) {
                 // accept invitation
-               // RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
-                RoomConfig.Builder roomConfigBuilder = new RoomConfig.Builder();
+                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
                 roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
                 Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
 
