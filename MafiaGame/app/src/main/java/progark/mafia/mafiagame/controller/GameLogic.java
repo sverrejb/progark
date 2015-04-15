@@ -18,6 +18,7 @@ import progark.mafia.mafiagame.models.Roles.AbstractRole;
 import progark.mafia.mafiagame.models.Roles.Civillian;
 import progark.mafia.mafiagame.models.Roles.Doctor;
 import progark.mafia.mafiagame.models.Roles.Mafia;
+import progark.mafia.mafiagame.utils.PlayerArraySearcher;
 import progark.mafia.mafiagame.utils.Randomizer;
 
 /**
@@ -30,19 +31,22 @@ public class GameLogic {
     ArrayList<AbstractPhase> gamePhases;
     AbstractPhase currentPhase;
 
+    // Contains the player who will be killed on the next commit.
+    public static ArrayList<Player> killList = new ArrayList<Player>();
+
+    // Contains the player that - if in the kill list - will be removed from it during the next commit
+    public static ArrayList<Player> saveList = new ArrayList<Player>();
+
+
 
     public static void main(String[] args) {
         GameLogic gl = new GameLogic();
         gl.createTestSetData();
         gl.initializeGameData();
-
-
-
-
     }
 
 
-    public static Player[] killList;
+
 
     // WeakRef so avoid weird mem leaks
     WeakReference<Activity> parentActivity;
@@ -127,10 +131,24 @@ public class GameLogic {
     // on progress. commitRound() should either be performed after all phases of a round has finished OR
     // on special occasions during the onePhaseEnd method in the phase class.
     public void commitRound() {
+        for(Player p : saveList) {
+            int savedIndex = PlayerArraySearcher.SearchArray(killList, p);
+            if(savedIndex != -1) {
+                killList.remove(p);
+            }
+        }
 
+        for(Player p : killList) {
+           // Perform method to kill player;
+        }
+
+        killList.clear();
+        saveList.clear();
     }
 
     public void initializeGameData() {
+
+
 
         generateRolesAndPhases();
         assignPlayers();
@@ -151,10 +169,37 @@ public class GameLogic {
         currentPhase = gamePhases.remove(0);
         System.out.println("Now beginning " + currentPhase.getId());
         currentPhase.onPhaseBegin();
+    }
 
-
+    public void addToKillList(Player p) {
+        if(PlayerArraySearcher.SearchArray(killList, p) == -1) {
+            killList.add(p);
+        }
 
     }
+
+    public void removeFromKillList(Player p) {
+        int playerFound = PlayerArraySearcher.SearchArray(killList, p);
+        if(playerFound != -1) {
+            killList.remove(playerFound);
+        }
+     }
+
+    public void addToSaveList(Player p) {
+        if(PlayerArraySearcher.SearchArray(saveList, p) == -1) {
+            saveList.add(p);
+        }
+
+    }
+
+    public void removeFromSaveList(Player p) {
+        int playerFound = PlayerArraySearcher.SearchArray(saveList, p);
+        if(playerFound != -1) {
+            saveList.remove(playerFound);
+        }
+    }
+
+
 
     public void voteComplete(Player target, Player performer) {
         currentPhase.performAction(target, performer);

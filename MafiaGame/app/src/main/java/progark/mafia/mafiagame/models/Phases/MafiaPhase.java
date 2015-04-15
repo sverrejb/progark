@@ -32,6 +32,6 @@ public class MafiaPhase extends AbstractPhase {
 
     @Override
     public void performAction(Player performer, Player target) {
-
+        gl.addToKillList(target);
     }
 }

@@ -2,14 +2,13 @@ package progark.mafia.mafiagame.models.Phases;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import progark.mafia.mafiagame.controller.GameLogic;
 import progark.mafia.mafiagame.models.Player;
 import progark.mafia.mafiagame.models.Roles.AbstractRole;
-import progark.mafia.mafiagame.utility.ComparePhases;
+import progark.mafia.mafiagame.utils.ComparePhases;
 
 /**
  * Created by Daniel on 10.03.2015.
@@ -152,7 +151,7 @@ public abstract class AbstractPhase implements Comparable<AbstractPhase>{
 
     }
 
-    // Check to see if a specific role can participate in this phase
+    // Check to see if a specific role can participate in a given phase
     public boolean canParticipate(AbstractRole role) {
         if(participateRoles.contains("all")) {
             return true;
@@ -171,17 +170,16 @@ public abstract class AbstractPhase implements Comparable<AbstractPhase>{
     public void disable() throws Exception {
         if(!mandatory) {
             for(String role : participateRoles) {
-            AbstractRole roleObject = AbstractRole.getMap().get(role);
-            ArrayList<String> AssoPhases = roleObject.getPhases();
-            int searchIndex = AssoPhases.indexOf(roleObject);
-            AssoPhases.remove(searchIndex);
-            if(AssoPhases.isEmpty()) {
-               roleObject.disable();
+                AbstractRole roleObject = AbstractRole.getMap().get(role);
+                ArrayList<String> AssoPhases = roleObject.getPhases();
+                int searchIndex = AssoPhases.indexOf(roleObject);
+                AssoPhases.remove(searchIndex);
+                if(AssoPhases.isEmpty()) {
+                    roleObject.disable();
+                }
             }
 
-            }
-
-            }
+        }
 
         else {
             throw new Exception("Attempt to disable mandatory phase. This is not allowed");
