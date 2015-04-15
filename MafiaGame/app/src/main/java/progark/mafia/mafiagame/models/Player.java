@@ -22,4 +22,12 @@ public class Player {
         this.role = AbstractRole.getMap().get(role);
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

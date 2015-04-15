@@ -7,28 +7,26 @@ import progark.mafia.mafiagame.controller.GameLogic;
  */
 public class Civillian extends AbstractRole {
 
-    static int numberInPlay = 0;
     final static int MAX_NUMBER = 0;
+    public static final String PERM_ID = "civillian";
+    public static final String DISPLAY_NAME = "Civillian";
+
+    String id = "civillian";
+    String displayName = "Civillian";
 
 
     @Override
-    int getNumberInplay() {
+    public int getNumberInPlay() {
         return numberInPlay;
     }
 
-    @Override
-    int getMaxNumber() {
-        return MAX_NUMBER;
-    }
-
     public Civillian(GameLogic gl) {
-        super(gl);
-        this.id = "civillian";
-        this.displayName = "Civillian";
+        super(gl, PERM_ID, DISPLAY_NAME);
+
     }
 
     @Override
-    void createCopy() {
+    public void createCopy() {
         Civillian newCopy = new Civillian(gl);
         newCopy.id = id;
         newCopy.displayName = displayName;

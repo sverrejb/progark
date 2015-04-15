@@ -1,17 +1,20 @@
 package progark.mafia.mafiagame.models.Phases;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import progark.mafia.mafiagame.controller.GameLogic;
 import progark.mafia.mafiagame.models.Player;
 import progark.mafia.mafiagame.models.Roles.AbstractRole;
+import progark.mafia.mafiagame.utility.ComparePhases;
 
 /**
  * Created by Daniel on 10.03.2015.
  */
-public abstract class AbstractPhase {
+public abstract class AbstractPhase implements Comparable<AbstractPhase>{
 
     // GameLogic controller. This should be added when any child is created to receive global
     // settings
@@ -49,27 +52,38 @@ public abstract class AbstractPhase {
 
     // This is a special value and if set to true requires that a performer is not null when
     // performing an action
-
-    boolean notePerformer;
+    boolean mandatoryPerformer;
 
     // A list of players that has been marked for elimination during this phase
 
     // The displayName of the phase. Can be used in-game description
     String displayName;
 
-    public AbstractPhase(String phaseId, String phaseName, float order) {
+    // Default constructor.
+    public AbstractPhase(GameLogic gl, String phaseId, String phaseName, float order) {
+        this.gl = gl;
         this.phaseId = phaseId;
         this.phaseName = phaseName;
         this.order = order;
-        this.participateRoles = participateRoles;
-
-    }
-    // Default constructor.
-    AbstractPhase(GameLogic gl) {
-        this.gl = gl;
         participateRoles = new ArrayList<String>();
         observeRoles = new ArrayList<String>();
+        phaseMap.put(this.phaseId, this);
     }
+
+
+    AbstractPhase(GameLogic gl) {
+        this.gl = gl;
+    }
+
+    AbstractPhase() {
+
+    }
+
+    public Float getOrder() {
+        return this.order;
+    }
+
+
 
     // Creates a copy of the current class and returns it.
     public abstract AbstractPhase createCopy();
@@ -77,11 +91,33 @@ public abstract class AbstractPhase {
     // Executes the sub-class-specific action.
     // performer is the player who has voted to perform the action.
     // target is the targeted (the one with most votes) player.
-    abstract void performAction(Player performer, Player target);
+    public abstract void performAction(Player performer, Player target);
 
     // Returns all phases in play.
     public static ArrayList<AbstractPhase> getPhases() {
         return phases;
+    }
+
+    public static ArrayList<AbstractPhase> getActivePhasesInOrder() {
+
+        ArrayList<AbstractPhase> allPhases = getPhases();
+        ArrayList<AbstractPhase> activePhases = new ArrayList<AbstractPhase>();
+
+        for(int i = 0; i < allPhases.size(); i++) {
+            AbstractPhase currentPhase = allPhases.get(i);
+            if(currentPhase.enabled) {
+                activePhases.add(currentPhase);
+            }
+
+        }
+
+        AbstractPhase[] activeArray = new AbstractPhase[activePhases.size()];
+        activeArray = activePhases.toArray(activeArray);
+        System.out.println(activeArray);
+        Arrays.sort(activeArray, new ComparePhases());
+        activePhases = new ArrayList<AbstractPhase>(Arrays.asList(activeArray));
+        return activePhases;
+
     }
 
     // Returns all roles that can participate in this phase
@@ -98,6 +134,8 @@ public abstract class AbstractPhase {
         return this.phaseId;
     }
 
+    public String getPhaseName() { return this.phaseName;}
+
     // Parent method that fires when the phase begins. Add any code to any child that requires some kind
     // of check here.
     public void onPhaseBegin() {
@@ -107,6 +145,10 @@ public abstract class AbstractPhase {
     // Parent method that fires when the phase ends. Add any code to any child that requires som kind
     // of check here.
     public void onPhaseEnd() {
+
+    }
+
+    public void beginVote() {
 
     }
 
@@ -128,8 +170,19 @@ public abstract class AbstractPhase {
     // Methods for disabling and enabling roles. Disabling mandatory phases are not allowed.
     public void disable() throws Exception {
         if(!mandatory) {
-            this.enabled = false;
-        }
+            for(String role : participateRoles) {
+            AbstractRole roleObject = AbstractRole.getMap().get(role);
+            ArrayList<String> AssoPhases = roleObject.getPhases();
+            int searchIndex = AssoPhases.indexOf(roleObject);
+            AssoPhases.remove(searchIndex);
+            if(AssoPhases.isEmpty()) {
+               roleObject.disable();
+            }
+
+            }
+
+            }
+
         else {
             throw new Exception("Attempt to disable mandatory phase. This is not allowed");
         }
@@ -140,9 +193,9 @@ public abstract class AbstractPhase {
     }
 
 
-    // When notePerformer is true, performer can not be null.
+    // When mandatoryPerformer is true, performer can not be null.
     public void ensurePerformerNotNull(Player performer) {
-        if(notePerformer && performer == null) {
+        if(mandatoryPerformer && performer == null) {
             throw new NullPointerException("Error in Phase: " + this.phaseId +
                     "Performer can not be null for a performer-required action");
         }
@@ -150,7 +203,6 @@ public abstract class AbstractPhase {
 
 
     // Returns if the given role can or cannot observe the current phase.
-
     public boolean canObserve(AbstractRole role) {
         if(observeRoles.contains("all")) {
             return true;
@@ -165,4 +217,23 @@ public abstract class AbstractPhase {
 
     }
 
-}
+
+    public int compareTo(AbstractPhase otherPhase) {
+
+        if(otherPhase.order > this.order) {
+            return 1;
+
+        }
+
+        else if (otherPhase.order < this.order) {
+            return -1;
+        }
+
+        else {
+            return 0;
+        }
+
+
+        }
+
+    }

@@ -7,28 +7,17 @@ import progark.mafia.mafiagame.controller.GameLogic;
  */
 public class Mafia extends AbstractRole {
 
-    static int numberInPlay = 0;
-    final static int MAX_NUMBER = 0;
+    final static int MAX_NUMBER = 3;
+    public static final String PERM_ID = "mafia";
+    public static final String DISPLAY_NAME = "Mafia";
 
 
-    @Override
-    int getNumberInplay() {
-        return numberInPlay;
+    public Mafia(GameLogic gl) {
+        super(gl, PERM_ID, DISPLAY_NAME);
     }
 
     @Override
-    int getMaxNumber() {
-        return MAX_NUMBER;
-    }
-
-    Mafia(GameLogic gl) {
-        super(gl);
-        this.id = "Mafia";
-        this.displayName = "Mafia";
-    }
-
-    @Override
-    void createCopy() {
+    public void createCopy() {
         Mafia newCopy = new Mafia(gl);
         newCopy.id = id;
         newCopy.displayName = displayName;

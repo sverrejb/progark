@@ -8,16 +8,16 @@ import progark.mafia.mafiagame.models.Player;
  */
 public class CivillianPhase extends AbstractPhase {
 
+    public static final String PHASE_ID = "civillian";
+    public static final String PHASE_NAME = "Civillian PHase";
+    public static final float ORDER = 200f;
 
 
     public CivillianPhase(GameLogic gl) {
-        super(gl);
-        phaseId = "civillian";
-        phaseName = "Civillian Phase";
-        order = 200f;
+        super(gl, PHASE_ID, PHASE_NAME, ORDER);
         participateRoles.add("all");
         mandatory = true;
-        phaseMap.put(this.phaseId, this);
+
 
         // Uncomment this to allow the little girl to be a witness at observing if "littleGirl" is
         // a valid role
@@ -37,8 +37,7 @@ public class CivillianPhase extends AbstractPhase {
     }
 
     @Override
-    void performAction(Player performer, Player target) {
-
+    public void performAction(Player performer, Player target) {
 
     }
 

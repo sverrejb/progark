@@ -16,13 +16,31 @@ import progark.mafia.mafiagame.models.Phases.MafiaPhase;
 import progark.mafia.mafiagame.models.Player;
 import progark.mafia.mafiagame.models.Roles.AbstractRole;
 import progark.mafia.mafiagame.models.Roles.Civillian;
+import progark.mafia.mafiagame.models.Roles.Doctor;
+import progark.mafia.mafiagame.models.Roles.Mafia;
+import progark.mafia.mafiagame.utils.Randomizer;
 
 /**
  * Created by Daniel on 10.03.2015.
  */
 public class GameLogic {
-    Player[] playersInGame;
+
+    ArrayList<Player> playersInGame = new ArrayList<Player>();
     boolean includeGameMaster;
+    ArrayList<AbstractPhase> gamePhases;
+    AbstractPhase currentPhase;
+
+
+    public static void main(String[] args) {
+        GameLogic gl = new GameLogic();
+        gl.createTestSetData();
+        gl.initializeGameData();
+
+
+
+
+    }
+
 
     public static Player[] killList;
 
@@ -32,11 +50,11 @@ public class GameLogic {
     DuplexCommunicator communicator;
 
 
-    public GameLogic(Activity parent, DuplexCommunicator communicator, boolean isServer){
+    public GameLogic(Activity parent, DuplexCommunicator communicator, boolean isServer) {
         parentActivity = new WeakReference<>(parent);
         this.communicator = communicator;
 
-        if(isServer) {// Do stuff
+        if (isServer) {// Do stuff
         }
 
 
@@ -54,27 +72,7 @@ public class GameLogic {
         // Commit the transaction
         transaction.commit();
     }
-
-
-    public void assignPlayers() {
-        ArrayList<Player> unAssignedPlayers = new ArrayList<Player>();
-
-    }
-
-    public void addPlayer(String id, String name) {
-        Player p = new Player(id, name);
-    }
-
-
-    // Method used to update all current tentative actions, such as killing off players and updating players
-    // on progress. commitRound() should either be performed after all phases of a round has finished OR
-    // on special occasions during the onePhaseEnd method in the phase class.
-
-    public void commitRound() {
-
-    }
-
-    public void initializeServer() {
+    public void generateRolesAndPhases() {
 
         // Might consider putting this into its own class. Initializes the Server of the game. At least Phases and Roles.
 
@@ -82,25 +80,128 @@ public class GameLogic {
         AbstractPhase.getPhases().add(new CivillianPhase(this));
         AbstractPhase.getPhases().add(new MafiaPhase(this));
 
+        // ...
+
+        // Create a list of all active phases sorted in the correct order (low number first);
+        gamePhases = AbstractPhase.getActivePhasesInOrder();
+
 
         // Initialize all roles
         Civillian.getRoles().add(new Civillian(this));
+        AbstractRole.getRoles().add(new Mafia(this));
+        Doctor.getRoles().add(new Doctor(this));
 
 
-        // For each phase in the game, get the roles connected through that game.
-        // Explicitly add that phase to the role for future access.
-        // This is done in this way to maintain concurrency between roles and phases connectivity.
-        // And to ease the process of enabling or disabling both roles and phases.
+        gamePhases = AbstractPhase.getActivePhasesInOrder();
+        System.out.print("Current active phases: ");
+        for(AbstractPhase x : gamePhases) {
+            System.out.print(x.getId() + " | ");
+        }
+        System.out.println();
 
-        for(AbstractPhase phase : AbstractPhase.getPhases()) {
-            for(String role : phase.getObserveRoles()) {
-                AbstractRole.getMap().get(role).getPhases().add(phase.getId());
+        connectRolesToPhase();
+    }
+
+
+    public void assignPlayers() {
+        ArrayList<Player> unAssignedPlayers = new ArrayList<Player>(playersInGame);
+        for(AbstractRole role : AbstractRole.getRoles()) {
+            while(role.getNumberInPlay() < role.getMax_number()) {
+                int randomPlayer = Randomizer.getRandomInt(0, unAssignedPlayers.size());
+                Player p = unAssignedPlayers.remove(randomPlayer);
+                p.assignRole(role.getId());
+                System.out.println("Player " + p.getName() + " got the role of " + role.getDisplayName());
+                role.increaseNumberInPlay();
             }
-            for(String role : phase.getParticipatingRoles()) {
-                AbstractRole.getMap().get(role).getPhases().add(phase.getId());
+        }
+
+    }
+
+    public void addPlayer(String id, String name) {
+        Player p = new Player(id, name);
+        playersInGame.add(p);
+    }
+
+
+    // Method used to update all current tentative actions, such as killing off players and updating players
+    // on progress. commitRound() should either be performed after all phases of a round has finished OR
+    // on special occasions during the onePhaseEnd method in the phase class.
+    public void commitRound() {
+
+    }
+
+    public void initializeGameData() {
+
+        generateRolesAndPhases();
+        assignPlayers();
+
+        for(AbstractPhase x :AbstractPhase.getPhases()) {
+            System.out.println("Checking all roles of phase: " + x.getId());
+            for(String role : x.getParticipatingRoles()) {
+                System.out.println(role + " can participate in this phase");
+            }
+        }
+
+        beginNextPhase();
+    }
+
+
+
+    public void beginNextPhase() {
+        currentPhase = gamePhases.remove(0);
+        System.out.println("Now beginning " + currentPhase.getId());
+        currentPhase.onPhaseBegin();
+
+
+
+    }
+
+    public void voteComplete(Player target, Player performer) {
+        currentPhase.performAction(target, performer);
+        currentPhase.onPhaseEnd();
+    }
+
+
+
+
+    // For each phase in the game, get the roles connected through that game.
+    // Explicitly add that phase to the role for future access.
+    // This is done in this way to maintain concurrency between roles and phases connectivity.
+    // And to ease the process of enabling or disabling both roles and phases.
+    public void connectRolesToPhase() {
+
+        for (AbstractPhase phase : AbstractPhase.getPhases()) {
+            System.out.println("Now finding all roles for phase: " + phase.getId());
+
+            for (String role : phase.getObserveRoles()) {
+                System.out.println("Getting all observer phases of role: " + role);
+                ArrayList<String> allPhasesOfRole = AbstractRole.getMap().get(role).getPhases();
+                if (!allPhasesOfRole.contains(role)) {
+                    allPhasesOfRole.add(phase.getId());
+                }
+            }
+            for (String role : phase.getParticipatingRoles()) {
+                if (role != "all") {
+                    System.out.println("Getting all phases of role: " + role);
+                    ArrayList<String> allPhasesOfRole = AbstractRole.getMap().get(role).getPhases();
+                    if (!allPhasesOfRole.contains((role))) {
+                        allPhasesOfRole.add(phase.getId());
+                    }
+                }
+            }
+
             }
 
         }
+
+
+    public void createTestSetData() {
+        Player p = new Player("ASJDOAJD", "Daniel");
+        Player o = new Player("ASDKAOSD", "Bob");
+        Player q = new Player("ASDKALSD", "Robert");
+        playersInGame.add(p);
+        playersInGame.add(o);
+        playersInGame.add(q);
 
     }
 
@@ -108,4 +209,7 @@ public class GameLogic {
 
 
 
-}
+
+
+    }
+
