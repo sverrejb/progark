@@ -9,7 +9,7 @@ public class Message extends Event {
 
     @Override
     public void receiveEvent() {
-        
+        //Tell all
     }
 
     @Override

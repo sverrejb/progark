@@ -12,6 +12,7 @@ public abstract class Event  {
     String eventID;
     String targetID;
     String senderID;
+    //Add timestamp that can be used for messages?
 
     public abstract void receiveEvent();
     public abstract void sendEvent();

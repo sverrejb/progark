@@ -252,6 +252,9 @@ public class GameLogic implements IMessageListener {
 
     @Override
     public void OnEventReceived(progark.mafia.mafiagame.connection.Event e) {
+        //Check what kind of event it is, send it where it belongs
+        //Type of event must be identified somehow,
+        // maybe something with the ID? If not, each Event must have some sort of typeidentifier
 
     }
 }
