@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
+import progark.mafia.mafiagame.connection.IMessageListener;
 import progark.mafia.mafiagame.fragments.GameFragment;
 import progark.mafia.mafiagame.models.Phases.AbstractPhase;
 import progark.mafia.mafiagame.models.Phases.CivillianPhase;
@@ -25,7 +26,7 @@ import progark.mafia.mafiagame.utils.Randomizer;
 /**
  * Created by Daniel on 10.03.2015.
  */
-public class GameLogic extends Event {
+public class GameLogic implements IMessageListener {
 
     ArrayList<Player> playersInGame = new ArrayList<Player>();
     boolean includeGameMaster;
@@ -250,22 +251,7 @@ public class GameLogic extends Event {
     }
 
     @Override
-    public void receiveEvent() {
-
-    }
-
-    @Override
-    public void sendEvent() {
-
-    }
-
-    @Override
-    public void serialize() {
-
-    }
-
-    @Override
-    public void deserialize() {
+    public void OnEventReceived(progark.mafia.mafiagame.connection.Event e) {
 
     }
 }
