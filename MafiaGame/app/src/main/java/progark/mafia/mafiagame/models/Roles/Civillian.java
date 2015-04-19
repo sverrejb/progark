@@ -30,9 +30,6 @@ public class Civillian extends AbstractRole {
         Civillian newCopy = new Civillian(gl);
         newCopy.id = id;
         newCopy.displayName = displayName;
-
-
     }
-
 
 }
