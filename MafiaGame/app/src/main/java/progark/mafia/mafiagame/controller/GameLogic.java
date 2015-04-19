@@ -38,12 +38,12 @@ public class GameLogic {
     public static ArrayList<Player> saveList = new ArrayList<Player>();
 
 
-
-    public static void main(String[] args) {
-        GameLogic gl = new GameLogic();
-        gl.createTestSetData();
-        gl.initializeGameData();
-    }
+// Dette må forandres på
+//    public static void main(String[] args) {
+//        GameLogic gl = new GameLogic();
+//        gl.createTestSetData();
+//        gl.initializeGameData();
+//    }
 
 
 
@@ -76,6 +76,7 @@ public class GameLogic {
         // Commit the transaction
         transaction.commit();
     }
+
     public void generateRolesAndPhases() {
 
         // Might consider putting this into its own class. Initializes the Server of the game. At least Phases and Roles.
