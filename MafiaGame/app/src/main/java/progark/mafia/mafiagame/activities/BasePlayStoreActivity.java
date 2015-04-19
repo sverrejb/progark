@@ -28,8 +28,8 @@ import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import controller.GameLogic;
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
+import progark.mafia.mafiagame.controller.GameLogic;
 import progark.mafia.mafiagame.utils.Constants;
 
 /**

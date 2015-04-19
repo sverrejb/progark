@@ -1,11 +1,10 @@
-package models.Roles;
+package progark.mafia.mafiagame.models.Roles;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import controller.GameLogic;
-import models.Phases.AbstractPhase;
+import progark.mafia.mafiagame.controller.GameLogic;
 
 /**
  * Created by Daniel on 10.03.2015.
@@ -15,6 +14,10 @@ public abstract class AbstractRole {
     GameLogic gl;
     String id;
     String displayName;
+
+    int numberInPlay;
+    int maxNumber = 1;
+
     static ArrayList<AbstractRole> roles = new ArrayList<AbstractRole>();
 
     static Map<String, AbstractRole> roleMap = new HashMap<String, AbstractRole>();
@@ -25,22 +28,43 @@ public abstract class AbstractRole {
     boolean enabled;
     boolean mandatory;
 
-    abstract int getNumberInplay();
+    public int getNumberInPlay() {
+        return numberInPlay;
+    }
 
-    abstract int getMaxNumber();
+    public int getMax_number() {
+        return maxNumber;
+    }
 
+    public void increaseNumberInPlay() {
+        numberInPlay += 1;
+    }
 
+    public void decreaseNumberInPlay() {
+        if(numberInPlay <= 0) {
+            numberInPlay -= 1;
+        }
+    }
 
     AbstractRole(GameLogic gl, String id, String displayName) {
         this.gl = gl;
         this.id = id;
         this.displayName = displayName;
         roles.add(this);
+        System.out.println("Creating entry for " + id + "in maps");
+        roleMap.put(id, this);
     }
 
     public AbstractRole(GameLogic gl) {
         this.gl = gl;
+        roles.add(this);
 
+
+    }
+
+    public void attachToMap(String id) {
+        System.out.println("Adding record for role: " + id);
+        roleMap.put(id, this);
     }
 
     public Map<String,AbstractRole> getRoleMap() {

@@ -1,6 +1,6 @@
-package models;
+package progark.mafia.mafiagame.models;
 
-import models.Roles.AbstractRole;
+import progark.mafia.mafiagame.models.Roles.AbstractRole;
 
 /**
  * Created by Daniel on 10.03.2015.
@@ -20,6 +20,14 @@ public class Player {
 
     public void assignRole(String role) {
         this.role = AbstractRole.getMap().get(role);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }
