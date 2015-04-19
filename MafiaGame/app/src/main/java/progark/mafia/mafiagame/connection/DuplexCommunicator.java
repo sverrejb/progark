@@ -34,8 +34,9 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
      * @param roomId
      * @param participants
      */
-    public DuplexCommunicator(GoogleApiClient googleApiClient, String roomId, Participant[] participants) {
+    public DuplexCommunicator(GoogleApiClient googleApiClient) {
         mMessageListeners = new ArrayList<>();
+        this.googleApiClient = googleApiClient;
     }
 
     private static final String TAG = DuplexCommunicator.class.getSimpleName();
@@ -96,5 +97,18 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
 
     public void removeMessageListener(IMessageListener messageListener){
         mMessageListeners.remove(messageListener);
+    }
+
+    // --------------------------
+    // Getters and setters
+    // --------------------------
+
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public void setParticipants(Participant[] participants) {
+        this.participants = participants;
     }
 }

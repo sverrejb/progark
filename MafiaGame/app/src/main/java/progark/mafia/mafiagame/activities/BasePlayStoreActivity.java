@@ -28,6 +28,8 @@ import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.GameLogic;
+import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.utils.Constants;
 
 /**
@@ -75,6 +77,12 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
     // My participant ID in the currently active game
     private String mMyId = null;
 
+    DuplexCommunicator duplexCommunicator;
+
+    GameLogic gameLogic;
+
+    boolean isServer = true;
+
     /**
      * Called when the activity is starting. Restores the activity state.
      */
@@ -108,6 +116,9 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
         }
 
         mGoogleApiClient.connect();
+
+        duplexCommunicator = new DuplexCommunicator(mGoogleApiClient);
+
     }
 
     /**
@@ -168,7 +179,7 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
                 }
 
                 // create the room and specify a variant if appropriate
-                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder(duplexCommunicator);
                 roomConfigBuilder.addPlayersToInvite(invitees);
                 if (autoMatchCriteria != null) {
                     roomConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
@@ -187,7 +198,10 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
                     Log.v(TAG, "Time to start the game!");
                     //todo swtich fragment to game fragment
                     // (start game)
+
+                    gameLogic = new GameLogic(this, duplexCommunicator, isServer);
                 }
+
                 else if (resultCode == Activity.RESULT_CANCELED) {
                     // Waiting room was dismissed with the back button. The meaning of this
                     // action is up to the game. You may choose to leave the room and cancel the
@@ -209,14 +223,9 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
     }
 
     // create a RoomConfigBuilder that's appropriate for your implementation
-    private RoomConfig.Builder makeBasicRoomConfigBuilder() {
+    private RoomConfig.Builder makeBasicRoomConfigBuilder(DuplexCommunicator duplexCommunicator) {
         return RoomConfig.builder(this)
-                .setMessageReceivedListener(new RealTimeMessageReceivedListener() {
-                    @Override
-                    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
-                        //todo not use this BS
-                    }
-                })
+                .setMessageReceivedListener(duplexCommunicator)
                 .setRoomStatusUpdateListener(this);
     }
 
@@ -249,15 +258,14 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
                     connectionHint.getParcelable(Multiplayer.EXTRA_INVITATION);
 
             if (inv != null) {
+                isServer = false;
                 // accept invitation
-                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder();
+                RoomConfig.Builder roomConfigBuilder = makeBasicRoomConfigBuilder(duplexCommunicator);
                 roomConfigBuilder.setInvitationIdToAccept(inv.getInvitationId());
                 Games.RealTimeMultiplayer.join(mGoogleApiClient, roomConfigBuilder.build());
 
                 // prevent screen from sleeping during handshake
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-                // todo go to game screen
             }
         }
 

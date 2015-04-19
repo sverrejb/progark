@@ -1,5 +1,11 @@
 package controller;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
+
+import com.google.android.gms.games.Game;
+
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import models.Phases.AbstractPhase;
@@ -8,6 +14,9 @@ import models.Phases.MafiaPhase;
 import models.Player;
 import models.Roles.AbstractRole;
 import models.Roles.Civillian;
+import progark.mafia.mafiagame.R;
+import progark.mafia.mafiagame.connection.DuplexCommunicator;
+import progark.mafia.mafiagame.fragments.GameFragment;
 
 /**
  * Created by Daniel on 10.03.2015.
@@ -17,6 +26,35 @@ public class GameLogic {
     boolean includeGameMaster;
 
     public static Player[] killList;
+
+    // WeakRef so avoid weird mem leaks
+    WeakReference<Activity> parentActivity;
+
+    DuplexCommunicator communicator;
+
+
+    public GameLogic(Activity parent, DuplexCommunicator communicator, boolean isServer){
+        parentActivity = new WeakReference<>(parent);
+        this.communicator = communicator;
+
+        if(isServer) {// Do stuff
+        }
+
+
+        // Setup view
+
+        GameFragment gameFragment = new GameFragment();
+
+        FragmentTransaction transaction = parentActivity.get().getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack if needed
+        transaction.replace(R.id.fragment_placeholder, gameFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
+    }
 
 
     public void assignPlayers() {
