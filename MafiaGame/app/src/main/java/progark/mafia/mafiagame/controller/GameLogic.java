@@ -18,13 +18,14 @@ import progark.mafia.mafiagame.models.Roles.AbstractRole;
 import progark.mafia.mafiagame.models.Roles.Civillian;
 import progark.mafia.mafiagame.models.Roles.Doctor;
 import progark.mafia.mafiagame.models.Roles.Mafia;
+import progark.mafia.mafiagame.utils.Event;
 import progark.mafia.mafiagame.utils.PlayerArraySearcher;
 import progark.mafia.mafiagame.utils.Randomizer;
 
 /**
  * Created by Daniel on 10.03.2015.
  */
-public class GameLogic {
+public class GameLogic extends Event {
 
     ArrayList<Player> playersInGame = new ArrayList<Player>();
     boolean includeGameMaster;
@@ -38,7 +39,7 @@ public class GameLogic {
     public static ArrayList<Player> saveList = new ArrayList<Player>();
 
 
-// Dette må forandres på
+// Dette mï¿½ forandres pï¿½
 //    public static void main(String[] args) {
 //        GameLogic gl = new GameLogic();
 //        gl.createTestSetData();
@@ -148,9 +149,6 @@ public class GameLogic {
     }
 
     public void initializeGameData() {
-
-
-
         generateRolesAndPhases();
         assignPlayers();
 
@@ -251,11 +249,24 @@ public class GameLogic {
 
     }
 
-
-
-
-
-
+    @Override
+    public void receiveEvent() {
 
     }
+
+    @Override
+    public void sendEvent() {
+
+    }
+
+    @Override
+    public void serialize() {
+
+    }
+
+    @Override
+    public void deserialize() {
+
+    }
+}
 
