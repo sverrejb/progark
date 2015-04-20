@@ -10,10 +10,11 @@ public class Mafia extends AbstractRole {
     final static int MAX_NUMBER = 3;
     public static final String PERM_ID = "mafia";
     public static final String DISPLAY_NAME = "Mafia";
+    public static final String TEAM = "mafia";
 
 
     public Mafia(GameLogic gl) {
-        super(gl, PERM_ID, DISPLAY_NAME);
+        super(gl, PERM_ID, DISPLAY_NAME, TEAM);
     }
 
     @Override

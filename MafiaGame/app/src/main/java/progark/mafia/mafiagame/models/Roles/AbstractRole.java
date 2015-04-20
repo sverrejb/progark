@@ -14,6 +14,7 @@ public abstract class AbstractRole {
     GameLogic gl;
     String id;
     String displayName;
+    String team;
 
     int numberInPlay;
     int maxNumber = 1;
@@ -46,10 +47,11 @@ public abstract class AbstractRole {
         }
     }
 
-    AbstractRole(GameLogic gl, String id, String displayName) {
+    AbstractRole(GameLogic gl, String id, String displayName, String team) {
         this.gl = gl;
         this.id = id;
         this.displayName = displayName;
+        this.team = team;
         roles.add(this);
         System.out.println("Creating entry for " + id + "in maps");
         roleMap.put(id, this);
@@ -60,6 +62,10 @@ public abstract class AbstractRole {
         roles.add(this);
 
 
+    }
+
+    public String getTeam() {
+        return this.team;
     }
 
     public void attachToMap(String id) {

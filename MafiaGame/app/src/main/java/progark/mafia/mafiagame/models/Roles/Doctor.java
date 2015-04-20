@@ -11,9 +11,10 @@ public class Doctor extends AbstractRole {
 
     public final static String PERM_ID = "doctor";
     public final static String DISPLAY_NAME = "Doctor";
+    public static final String TEAM = "civillian";
 
     public Doctor(GameLogic gl) {
-        super(gl, PERM_ID, DISPLAY_NAME);
+        super(gl, PERM_ID, DISPLAY_NAME, TEAM);
     }
 
     @Override

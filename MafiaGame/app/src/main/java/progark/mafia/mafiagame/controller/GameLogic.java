@@ -20,10 +20,15 @@ import progark.mafia.mafiagame.utils.Randomizer;
  */
 public class GameLogic {
 
+    VotingSystem votingSystem;
     ArrayList<Player> playersInGame = new ArrayList<Player>();
     boolean includeGameMaster;
     ArrayList<AbstractPhase> gamePhases;
     AbstractPhase currentPhase;
+
+
+    // These lists serve as storage for players that relate to different actions performed in Commits.
+    // These can be extended as new phases or roles are created.
 
     // Contains the player who will be killed on the next commit.
     public static ArrayList<Player> killList = new ArrayList<Player>();
@@ -32,7 +37,7 @@ public class GameLogic {
     public static ArrayList<Player> saveList = new ArrayList<Player>();
 
 
-// Dette må forandres på
+// Dette mï¿½ forandres pï¿½
 //    public static void main(String[] args) {
 //        GameLogic gl = new GameLogic();
 //        gl.createTestSetData();
@@ -44,6 +49,12 @@ public class GameLogic {
     public GameLogic(DuplexCommunicator duplexCommunicator) {
 
     }
+
+    public void addVotingSystem(VotingSystem s) {
+        this.votingSystem = s;
+    }
+
+
 
     public void generateRolesAndPhases() {
 
@@ -95,6 +106,12 @@ public class GameLogic {
         playersInGame.add(p);
     }
 
+    private void removePlayer(Player id) {
+        int pos = PlayerArraySearcher.SearchArray(playersInGame, id);
+        playersInGame.remove(pos);
+
+    }
+
 
     // Method used to update all current tentative actions, such as killing off players and updating players
     // on progress. commitRound() should either be performed after all phases of a round has finished OR
@@ -116,9 +133,6 @@ public class GameLogic {
     }
 
     public void initializeGameData() {
-
-
-
         generateRolesAndPhases();
         assignPlayers();
 
@@ -135,10 +149,19 @@ public class GameLogic {
 
 
     public void beginNextPhase() {
-        currentPhase = gamePhases.remove(0);
-        System.out.println("Now beginning " + currentPhase.getId());
-        currentPhase.onPhaseBegin();
+        if(!gamePhases.isEmpty()) {
+            currentPhase = gamePhases.remove(0);
+            System.out.println("Now beginning " + currentPhase.getId());
+            currentPhase.onPhaseBegin();
+        }
+        else {
+            checkVictoryConditions();
+        }
     }
+
+
+    // These methods are here to add and remove players from different lists.
+    // TODO: Add more general methods to add to list, so new methods for each seperate list does not need to be done
 
     public void addToKillList(Player p) {
         if(PlayerArraySearcher.SearchArray(killList, p) == -1) {
@@ -169,20 +192,64 @@ public class GameLogic {
     }
 
 
+    // These methods serve as callbacks for the voting system.
+
+    // Called when a voting is successful and a majority vote for one player has been made.
 
     public void voteComplete(Player target, Player performer) {
         currentPhase.performAction(target, performer);
         currentPhase.onPhaseEnd();
     }
 
+    // Called when a vote failed, for example if time is out
+    public void voteFailed() {
 
+    }
+
+    // Called when a voting is not successful, and a new vote has to be done
+    public void reVote() {
+
+
+    }
+
+    // Checks the victory conditions of the game and returns a corresponding integer. 1 is returned
+    // if civillian wins, -1 returns if mafia wins and 0 is returned if no victory conditions have
+    // been fulfilled.
+
+    public int checkVictoryConditions() {
+        int mafiaInGame = 0;
+        int civillianInGame = 0;
+        for(Player p : playersInGame) {
+            if(p.getRole().getTeam() == "mafia") {
+                mafiaInGame += 1;
+            }
+            if(p.getRole().getTeam() == "civillian") {
+                civillianInGame +=1;
+            }
+
+        }
+        if(mafiaInGame == 0) {
+            return 1;
+        }
+
+        else if(mafiaInGame >= civillianInGame) {
+            return -1;
+        }
+
+        else {
+            return 0;
+        }
+
+
+
+    }
 
 
     // For each phase in the game, get the roles connected through that game.
     // Explicitly add that phase to the role for future access.
     // This is done in this way to maintain concurrency between roles and phases connectivity.
     // And to ease the process of enabling or disabling both roles and phases.
-    public void connectRolesToPhase() {
+    private void connectRolesToPhase() {
 
         for (AbstractPhase phase : AbstractPhase.getPhases()) {
             System.out.println("Now finding all roles for phase: " + phase.getId());
