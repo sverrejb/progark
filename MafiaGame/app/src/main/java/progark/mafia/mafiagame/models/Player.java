@@ -30,4 +30,8 @@ public class Player {
         return name;
     }
 
+    public AbstractRole getRole(){
+        return role;
+    }
+
 }
