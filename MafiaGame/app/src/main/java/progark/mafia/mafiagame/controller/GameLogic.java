@@ -11,6 +11,7 @@ import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.connection.IMessageListener;
 import progark.mafia.mafiagame.fragments.GameFragment;
+import progark.mafia.mafiagame.models.Message;
 import progark.mafia.mafiagame.models.Phases.AbstractPhase;
 import progark.mafia.mafiagame.models.Phases.CivillianPhase;
 import progark.mafia.mafiagame.models.Phases.MafiaPhase;
@@ -31,6 +32,7 @@ public class GameLogic implements IMessageListener {
     ArrayList<Player> playersInGame = new ArrayList<Player>();
     boolean includeGameMaster;
     ArrayList<AbstractPhase> gamePhases;
+    ArrayList<Message> messages;
     AbstractPhase currentPhase;
 
     // Contains the player who will be killed on the next commit.
@@ -59,6 +61,7 @@ public class GameLogic implements IMessageListener {
     public GameLogic(Activity parent, DuplexCommunicator communicator, boolean isServer) {
         parentActivity = new WeakReference<>(parent);
         this.communicator = communicator;
+        messages = new ArrayList<Message>();
 
         if (isServer) {// Do stuff
         }
