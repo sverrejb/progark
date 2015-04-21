@@ -29,9 +29,7 @@ public class GameFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_main_menu, container, false);
-
-        ((Button)view.findViewById(R.id.btnFindPlayers)).setOnClickListener(this);
+        View view =  inflater.inflate(R.layout.fragment_game, container, false);
 
         return view;
     }

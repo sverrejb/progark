@@ -202,6 +202,7 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
                     duplexCommunicator.setRoomId(mRoomId);
                     duplexCommunicator.setMe(mMyId);
                     gameLogic = new GameController(this, duplexCommunicator, isServer);
+                    gameLogic.start();
                 }
 
                 else if (resultCode == Activity.RESULT_CANCELED) {

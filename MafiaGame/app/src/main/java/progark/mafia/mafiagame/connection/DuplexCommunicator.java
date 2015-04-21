@@ -15,6 +15,8 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import progark.mafia.mafiagame.controller.GameController;
+
 /**
  * Created by PerØyvind on 23/03/2015.
  *
@@ -29,13 +31,15 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
     ArrayList<Participant> participants;
     String me;
 
+    // GameController is set when we are running the server as well, so we can communicate directly yo oneself.
+    // todo HOW TO DO THIS???
+    GameController gameController = null;
+
 
 
     /**
      *
      * @param googleApiClient
-     * @param roomId
-     * @param participants
      */
     public DuplexCommunicator(GoogleApiClient googleApiClient) {
         mMessageListeners = new ArrayList<>();
@@ -85,7 +89,11 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
 
         if(data != null) {
             for (Participant p : participants) {
-                sendMessage(data, p.getParticipantId());
+                if(gameController != null && gameController.getCommunicator().getMe().equals(p.getParticipantId())) {
+                    gameController.OnEventReceived(e);
+                } else {
+                    sendMessage(data, p.getParticipantId());
+                }
             }
         } else
             System.err.println("Serious sendMessageToAllError");
@@ -94,7 +102,11 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
     public void sendMessageTo(Event e, String participant) {
         byte[] data = marshallEvent(e);
 
-        sendMessage(data, participant);
+        if(gameController != null && gameController.getCommunicator().getMe().equals(participant)) {
+            gameController.OnEventReceived(e);
+        } else {
+            sendMessage(data, participant);
+        }
     }
 
     private byte[] marshallEvent(Event e) {
@@ -149,6 +161,10 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
     // Getters and setters
     // --------------------------
 
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
 
     public void setRoomId(String roomId) {
         this.roomId = roomId;

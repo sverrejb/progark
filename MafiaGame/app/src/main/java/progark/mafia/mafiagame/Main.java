@@ -19,7 +19,7 @@ public class Main extends BasePlayStoreActivity {
         setContentView(R.layout.activity_main);
 
 
-                MainMenuFragment gameFragment = new MainMenuFragment();
+        MainMenuFragment gameFragment = new MainMenuFragment();
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
@@ -31,7 +31,6 @@ public class Main extends BasePlayStoreActivity {
         // Commit the transaction
         transaction.commit();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,5 +53,4 @@ public class Main extends BasePlayStoreActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

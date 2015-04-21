@@ -30,7 +30,9 @@ import progark.mafia.mafiagame.utils.Randomizer;
 public class GameLogic {
 
     VotingSystem votingSystem;
-    ArrayList<Player> playersInGame = new ArrayList<Player>();
+    ArrayList<Player> playersInGame = new ArrayList<>();
+
+
     boolean includeGameMaster;
     ArrayList<AbstractPhase> gamePhases;
     AbstractPhase currentPhase;
@@ -44,22 +46,12 @@ public class GameLogic {
     // Contains the player that - if in the kill list - will be removed from it during the next commit
     public static ArrayList<Player> saveList = new ArrayList<Player>();
 
-
-
-// Dette m� forandres p�
-//    public static void main(String[] args) {
-//        GameLogic gl = new GameLogic();
-//        gl.createTestSetData();
-//        gl.initializeGameData();
-//    }
-
-      // WeakRef so avoid weird mem leaks
-    WeakReference<Activity> parentActivity;
-
     DuplexCommunicator communicator;
 
 
     public GameLogic(DuplexCommunicator communicator) {
+        this.communicator = communicator;
+
 
         ArrayList<Participant> participantsInGame = communicator.getParticipants();
 
@@ -119,11 +111,10 @@ public class GameLogic {
         connectRolesToPhase();
     }
 
-
     public void assignPlayers() {
-        ArrayList<Player> unAssignedPlayers = new ArrayList<Player>(playersInGame);
+        ArrayList<Player> unAssignedPlayers = new ArrayList<>(playersInGame);
         for(AbstractRole role : AbstractRole.getRoles()) {
-            while(role.getNumberInPlay() < role.getMax_number()) {
+            while(role.getNumberInPlay() < role.getMax_number() && unAssignedPlayers.size() > 0) {
                 int randomPlayer = Randomizer.getRandomInt(0, unAssignedPlayers.size());
                 Player p = unAssignedPlayers.remove(randomPlayer);
                 p.assignRole(role.getId());
@@ -342,10 +333,8 @@ public class GameLogic {
     }
 
 
-
-
-
-
-
+    public ArrayList<Player> getPlayersInGame() {
+        return playersInGame;
     }
+}
 

@@ -12,7 +12,7 @@ public class Event implements Serializable {
     public String fieldOne;
     public String[] fieldTwo;
 
-    enum Type {
+    public enum Type {
         SETUP, ROLE, VOTE, COMMIT, VOTED, SOFTVOTE, VICTORY
     }
 }
