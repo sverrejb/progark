@@ -41,10 +41,10 @@ public class GameLogic {
     // These lists serve as storage for players that relate to different actions performed in Commits.
     // These can be extended as new phases or roles are created.
     // Contains the player who will be killed on the next commit.
-    public static ArrayList<Player> killList = new ArrayList<Player>();
+    public static ArrayList<Player> killList = new ArrayList<>();
 
     // Contains the player that - if in the kill list - will be removed from it during the next commit
-    public static ArrayList<Player> saveList = new ArrayList<Player>();
+    public static ArrayList<Player> saveList = new ArrayList<>();
 
     DuplexCommunicator communicator;
 

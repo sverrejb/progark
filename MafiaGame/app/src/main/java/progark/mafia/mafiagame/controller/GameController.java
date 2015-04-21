@@ -95,18 +95,20 @@ public class GameController implements IMessageListener{
                 clientController.start();
                 break;
             case VOTE:
-                // todo inform client to start voting
+                clientController.startVotingProcess(e.fieldTwo);
                 break;
             case SOFTVOTE:
-                // todo inform client of soft vote
+                clientController.otherPlayersSoftVote(e.fieldTwo[0], e.fieldTwo[1]);
+                break;
             case VOTED:
                 // todo inform votesystem of vote
                 break;
             case COMMIT:
-                // todo inform client of who is killed
+                clientController.commit(e.fieldTwo);
                 break;
             case VICTORY:
-                // todo inform client of who won
+                clientController.victory(e.fieldOne);
+                break;
 
         }
 
