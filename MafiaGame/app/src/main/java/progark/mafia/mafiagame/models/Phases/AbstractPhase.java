@@ -90,7 +90,7 @@ public abstract class AbstractPhase implements Comparable<AbstractPhase>{
     // Executes the sub-class-specific action.
     // performer is the player who has voted to perform the action.
     // target is the targeted (the one with most votes) player.
-    public abstract void performAction(Player performer, Player target);
+    public abstract void performAction(Player[] performer, Player target);
 
     // Returns all phases in play.
     public static ArrayList<AbstractPhase> getPhases() {
@@ -213,6 +213,10 @@ public abstract class AbstractPhase implements Comparable<AbstractPhase>{
         }
         return false;
 
+    }
+
+    public boolean hasMandatoryPerformer() {
+        return mandatoryPerformer;
     }
 
 

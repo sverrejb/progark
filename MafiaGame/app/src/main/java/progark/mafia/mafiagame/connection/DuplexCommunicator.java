@@ -30,6 +30,7 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
     String me;
 
 
+
     /**
      *
      * @param googleApiClient

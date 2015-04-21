@@ -10,6 +10,7 @@ public class Civillian extends AbstractRole {
     final static int MAX_NUMBER = 0;
     public static final String PERM_ID = "civillian";
     public static final String DISPLAY_NAME = "Civillian";
+    public static final String TEAM = "civillian";
 
     String id = "civillian";
     String displayName = "Civillian";
@@ -21,7 +22,7 @@ public class Civillian extends AbstractRole {
     }
 
     public Civillian(GameLogic gl) {
-        super(gl, PERM_ID, DISPLAY_NAME);
+        super(gl, PERM_ID, DISPLAY_NAME, TEAM);
 
     }
 
