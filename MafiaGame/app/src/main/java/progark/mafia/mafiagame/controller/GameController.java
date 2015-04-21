@@ -1,21 +1,21 @@
 package progark.mafia.mafiagame.controller;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
-import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.connection.Event;
 import progark.mafia.mafiagame.connection.IMessageListener;
-import progark.mafia.mafiagame.connection.SYUPALOl;
-import progark.mafia.mafiagame.fragments.GameFragment;
+
 
 /**
  * Created by Perÿyvind on 21/04/2015.
  */
 public class GameController implements IMessageListener{
+
+    public static final String TAG = GameController.class.getSimpleName();
 
     // WeakRef so avoid weird mem leaks
     private WeakReference<Activity> parentActivity;
@@ -29,39 +29,44 @@ public class GameController implements IMessageListener{
         this.communicator = communicator;
         this.communicator.addMessageListener(this);
 
+        System.out.println("Participants:");
+        for (int i = 0; i < this.communicator.getParticipants().size(); i++) {
+            Log.v(TAG, this.communicator.getParticipants().get(i).getDisplayName());
+        }
+
         if (isServer) {// Do stuff
-            gameLogic = new GameLogic();
+            Log.v(TAG, "IAM SERVER");
+            gameLogic = new GameLogic(this.communicator);
 
-
+            // msg example..
+//            Event e = new Event();
+//            e.msg = "lol";
+//
+//            this.communicator.sendMessageToAll(e);
         }
 
 
-        // Setup view
-
-        GameFragment gameFragment = new GameFragment();
-
-        FragmentTransaction transaction = parentActivity.get().getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack if needed
-        transaction.replace(R.id.fragment_placeholder, gameFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();
+//        // Setup view
+//
+//        GameFragment gameFragment = new GameFragment();
+//
+//        FragmentTransaction transaction = parentActivity.get().getFragmentManager().beginTransaction();
+//
+//        // Replace whatever is in the fragment_container view with this fragment,
+//        // and add the transaction to the back stack if needed
+//        transaction.replace(R.id.fragment_placeholder, gameFragment);
+//        transaction.addToBackStack(null);
+//
+//        // Commit the transaction
+//        transaction.commit();
     }
-
-
-
-
 
     @Override
     public void OnEventReceived(Event e) {
+        // Check type and pipe forward.
+        // If GameLogic then also server
 
-        if(e instanceof SYUPALOl){
-            gameLogic.SNUBLISCHANBLIIBIBIF((SYUPALOl)e);
-        }
-
+        Log.v(TAG, "RECEIVED: " + e.msg);
     }
 
     public DuplexCommunicator getCommunicator() {

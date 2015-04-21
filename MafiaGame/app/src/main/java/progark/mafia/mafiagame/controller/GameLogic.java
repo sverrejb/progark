@@ -3,6 +3,7 @@ package progark.mafia.mafiagame.controller;
 import java.util.ArrayList;
 
 
+import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.models.Phases.AbstractPhase;
 import progark.mafia.mafiagame.models.Phases.CivillianPhase;
 import progark.mafia.mafiagame.models.Phases.MafiaPhase;
@@ -40,7 +41,7 @@ public class GameLogic {
 
 
 
-    public GameLogic() {
+    public GameLogic(DuplexCommunicator duplexCommunicator) {
 
     }
 

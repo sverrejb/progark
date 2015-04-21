@@ -200,6 +200,7 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
 
                     duplexCommunicator.setParticipants(mParticipants);
                     duplexCommunicator.setRoomId(mRoomId);
+                    duplexCommunicator.setMe(mMyId);
                     gameLogic = new GameController(this, duplexCommunicator, isServer);
                 }
 
