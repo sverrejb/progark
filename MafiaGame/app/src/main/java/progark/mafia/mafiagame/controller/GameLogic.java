@@ -1,17 +1,13 @@
 package progark.mafia.mafiagame.controller;
 
-import android.app.Activity;
-
-import android.app.FragmentTransaction;
 import android.util.Log;
 
 import com.google.android.gms.games.multiplayer.Participant;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
+import progark.mafia.mafiagame.connection.Event;
 import progark.mafia.mafiagame.models.Phases.AbstractPhase;
 import progark.mafia.mafiagame.models.Phases.CivillianPhase;
 import progark.mafia.mafiagame.models.Phases.DoctorPhase;
@@ -29,7 +25,6 @@ import progark.mafia.mafiagame.utils.Randomizer;
  */
 public class GameLogic {
 
-    VotingSystem votingSystem;
     ArrayList<Player> playersInGame = new ArrayList<>();
 
 
@@ -49,6 +44,8 @@ public class GameLogic {
     DuplexCommunicator communicator;
 
 
+    VotingSystem votingSystem;
+
     public GameLogic(DuplexCommunicator communicator) {
         this.communicator = communicator;
 
@@ -59,7 +56,7 @@ public class GameLogic {
             addPlayer(participant.getParticipantId(), participant.getDisplayName());
         }
 
-        startGame();
+        //startGame();
 
     }
 
@@ -73,7 +70,7 @@ public class GameLogic {
     }
 
     public void startGame() {
-        initializeGameData();
+        //initializeGameData();
         gameStarted = true;
         beginNextPhase();
     }
@@ -199,6 +196,9 @@ public class GameLogic {
             System.out.println("Now beginning " + currentPhase.getId());
             currentPhase.onPhaseBegin();
 
+
+            // todo start vote here
+            votingSystem = new VotingSystem(this, playersInGame, currentPhase);
         }
         else {
             beginNextRound();
@@ -242,7 +242,21 @@ public class GameLogic {
 
     // Called when a voting is successful and a majority vote for one player has been made.
 
-    public void voteComplete(Player target, Player[] performer) {
+    public void voteComplete(String id, Player[] performer) {
+
+        Player target = null;
+        for (int i = 0; i < playersInGame.size(); i++) {
+            if(playersInGame.get(i).getId().equals(id)) {
+                target = playersInGame.get(i);
+                break;
+            }
+        }
+
+        if(target == null){
+            System.err.println("Wierd bug....");
+            return;
+        }
+
         currentPhase.performAction(performer, target);
         currentPhase.onPhaseEnd();
     }
@@ -331,6 +345,16 @@ public class GameLogic {
 
     }
 
+
+    public void receiveVote(Event e){
+        if(votingSystem != null) {
+            votingSystem.receiveVote(e);
+        }
+    }
+
+    public DuplexCommunicator getCommunicator() {
+        return communicator;
+    }
 
     public ArrayList<Player> getPlayersInGame() {
         return playersInGame;

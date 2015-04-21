@@ -21,9 +21,7 @@ public class VotingSystem{
     HashMap<String, Integer> votes;         // vote count
     HashMap<String, String> whatWasVoted;   // Who voted on who
 
-    String target;
-
-    public VotingSystem(GameLogic gameLogic, ArrayList playersInGame, AbstractPhase phase){
+    public VotingSystem(GameLogic gameLogic, ArrayList<Player> playersInGame, AbstractPhase phase){
         this.playersAlive = playersInGame;
         this.phase = phase;
         gl = gameLogic;
@@ -35,14 +33,13 @@ public class VotingSystem{
         sortVotersOnCurrentPhase();
         initiateVoting();
 
-        target = "";
     }
 
     // List of players in, list of eligible players out
     private void sortVotersOnCurrentPhase(){
 
         for (int i = 0; i < playersAlive.size(); i++){
-            if(phase.getParticipatingRoles().contains(playersAlive.get(i).getRole())) {
+            if(phase.getParticipatingRoles().contains(playersAlive.get(i).getRole().getId())) {
                 whoCanVote.put(playersAlive.get(i).getId(), playersAlive.get(i));
             }
             votes.put(playersAlive.get(i).getId(), 0); // adds all player IDs to the hashmap
@@ -63,17 +60,31 @@ public class VotingSystem{
 
         }
 
-        gl.voteComplete(PlayerObject, null);    // needs to send the player that got the majority of the votes
+        gl.voteComplete(h, null);    // needs to send the player that got the majority of the votes
                                                 // null if more than one player voted, if only one player voted "doctor" he will be in the array..
     }
 
     // sends a message to all clients with a list with the IDs to all who can vote
     private void initiateVoting(){
 
+        String[] canVote = new String[whoCanVote.size()];
+
+        int c = 0;
+        for (String s : whoCanVote.keySet()) {
+            canVote[c++] = s;
+        }
+
+        for (String s : whoCanVote.keySet()) {
+            Event e = new Event();
+            e.type = Event.Type.VOTE;
+            e.fieldTwo = canVote;
+
+            gl.getCommunicator().sendMessageTo(e, s);
+        }
     }
 
     // wait on votes and initiate count when all votes have been received or time runs out.
-    private void receiveVote(Event vote){
+    public void receiveVote(Event vote){
 
         // fieldOne: the target of the vote
         // [] fieldTwo: index 0 = the vote performer

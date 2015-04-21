@@ -40,6 +40,7 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.v(TAG, "onCreateView");
         View view =  inflater.inflate(R.layout.fragment_game, container, false);
         btnShowRole = (Button)view.findViewById(R.id.btnShowRole);
         txtVote = (TextView)view.findViewById(R.id.txtVoteTxt);
@@ -50,6 +51,8 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onAttach(Activity activity) {
+        Log.v(TAG, "onAttach");
+
         super.onAttach(activity);
     }
 
@@ -57,6 +60,8 @@ public class GameFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.v(TAG, "onActivityCreated");
+
 
         btnShowRole.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +84,7 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
 
     public void voteOn(ArrayList<String> toVoteIds){
+        Log.v(TAG, "voteOn");
         voteLayout.removeAllViewsInLayout();
 
         for (int i = 0; i < toVoteIds.size(); i++) {

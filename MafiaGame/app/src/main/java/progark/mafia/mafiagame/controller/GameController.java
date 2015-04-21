@@ -1,6 +1,7 @@
 package progark.mafia.mafiagame.controller;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
@@ -56,6 +57,7 @@ public class GameController implements IMessageListener{
 
             this.communicator.sendMessageToAll(msg);
 
+            gameLogic.initializeGameData();
 
             // ===============================
             // Step 2 Send assigned roles
@@ -86,6 +88,16 @@ public class GameController implements IMessageListener{
                 clientController.setRole(e.fieldOne);
                 // We are now ready
                 clientController.start();
+
+                if(gameLogic != null) {
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            gameLogic.startGame();
+                        }
+                    }, 5000);
+                }
                 break;
             case VOTE:
                 clientController.startVotingProcess(e.fieldTwo);
@@ -94,7 +106,7 @@ public class GameController implements IMessageListener{
                 clientController.otherPlayersSoftVote(e.fieldTwo[0], e.fieldTwo[1]);
                 break;
             case VOTED:
-                // todo inform votesystem of vote
+                gameLogic.receiveVote(e);
                 break;
             case COMMIT:
                 clientController.commit(e.fieldTwo);
