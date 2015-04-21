@@ -18,8 +18,6 @@ import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.multiplayer.Invitation;
 import com.google.android.gms.games.multiplayer.Multiplayer;
 import com.google.android.gms.games.multiplayer.Participant;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
@@ -29,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
+import progark.mafia.mafiagame.controller.GameController;
 import progark.mafia.mafiagame.controller.GameLogic;
 import progark.mafia.mafiagame.utils.Constants;
 
@@ -79,7 +78,7 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
 
     DuplexCommunicator duplexCommunicator;
 
-    GameLogic gameLogic;
+    GameController gameLogic;
 
     boolean isServer = true;
 
@@ -199,7 +198,10 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
                     //todo swtich fragment to game fragment
                     // (start game)
 
-                    gameLogic = new GameLogic(this, duplexCommunicator, isServer);
+                    duplexCommunicator.setParticipants(mParticipants);
+                    duplexCommunicator.setRoomId(mRoomId);
+                    duplexCommunicator.setMe(mMyId);
+                    gameLogic = new GameController(this, duplexCommunicator, isServer);
                 }
 
                 else if (resultCode == Activity.RESULT_CANCELED) {

@@ -1,7 +1,5 @@
 package progark.mafia.mafiagame.connection;
 
-import android.util.Log;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.Participant;
@@ -11,7 +9,9 @@ import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceived
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
@@ -26,7 +26,9 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
 
     GoogleApiClient googleApiClient;
     String roomId;
-    Participant[] participants;
+    ArrayList<Participant> participants;
+    String me;
+
 
     /**
      *
@@ -45,50 +47,93 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
         byte[] data = realTimeMessage.getMessageData();
 
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
+        Event event = null;
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(data);
+        ObjectInput in = null;
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            in = new ObjectInputStream(bis);
+            event = (Event)in.readObject();
 
-            Event e = (Event)objectInputStream.readObject();
-            Log.v(TAG, "DATA RECEIVED: " + e);
-
-
-            for(IMessageListener listener : mMessageListeners) {
-                listener.OnEventReceived(e);
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bis.close();
+            } catch (IOException ex) {
+                // ignore close exception
             }
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+        }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        if(event == null) return;
+
+        for(IMessageListener listener : mMessageListeners) {
+            listener.OnEventReceived(event);
         }
     }
 
-    void sendMessage(Event e) {
+    public void sendMessageToAll(Event e) {
+        byte[] data = marshallEvent(e);
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        if(data != null) {
+            for (Participant p : participants) {
+                sendMessage(data, p.getParticipantId());
+            }
+        } else
+            System.err.println("Serious sendMessageToAllError");
+    }
 
-        byte[] data;
+    public void sendMessageTo(Event e, String participant) {
+        byte[] data = marshallEvent(e);
+
+        sendMessage(data, participant);
+    }
+
+    private byte[] marshallEvent(Event e) {
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = null;
 
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-            objectOutputStream.writeObject(e);
+            out = new ObjectOutputStream(bos);
+            out.writeObject(e);
 
-            data = new byte[byteArrayOutputStream.size()];
-            byteArrayOutputStream.write(data);
-
-            for(Participant p : participants) {
-                Games.RealTimeMultiplayer.sendReliableMessage(
-                        googleApiClient,
-                        null,
-                        data,
-                        roomId,
-                        p.getParticipantId());
-            }
+            return bos.toByteArray();
 
         } catch (IOException e1) {
             e1.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException ex) {
+                // ignore close exception
+            }
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                // ignore close exception
+            }
         }
+
+        return null;
+    }
+
+    private void sendMessage(byte[] data, String participantId){
+        Games.RealTimeMultiplayer.sendReliableMessage(
+                googleApiClient,
+                null,
+                data,
+                roomId,
+                participantId);
     }
 
     public void addMessageListener(IMessageListener messageListener){
@@ -108,7 +153,19 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
         this.roomId = roomId;
     }
 
-    public void setParticipants(Participant[] participants) {
+    public void setParticipants(ArrayList<Participant> participants) {
         this.participants = participants;
+    }
+
+    public void setMe(String me) {
+        this.me = me;
+    }
+
+    public String getMe() {
+        return me;
+    }
+
+    public ArrayList<Participant> getParticipants() {
+        return participants;
     }
 }
