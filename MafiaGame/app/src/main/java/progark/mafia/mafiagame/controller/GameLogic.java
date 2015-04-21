@@ -38,7 +38,6 @@ public class GameLogic {
 
     // These lists serve as storage for players that relate to different actions performed in Commits.
     // These can be extended as new phases or roles are created.
-
     // Contains the player who will be killed on the next commit.
     public static ArrayList<Player> killList = new ArrayList<Player>();
 
@@ -54,7 +53,7 @@ public class GameLogic {
 //        gl.initializeGameData();
 //    }
 
-    // WeakRef so avoid weird mem leaks
+      // WeakRef so avoid weird mem leaks
     WeakReference<Activity> parentActivity;
 
     DuplexCommunicator communicator;
@@ -100,7 +99,6 @@ public class GameLogic {
         // ...
 
         // Create a list of all active phases sorted in the correct order (low number first);
-        gamePhases = AbstractPhase.getActivePhasesInOrder();
 
         // Initialize all roles
         Civillian.getRoles().add(new Civillian(this));
@@ -186,10 +184,6 @@ public class GameLogic {
     }
 
 
-
-
-
-
     public void beginNextRound() {
             if(checkVictoryConditions() == 1)
             {
@@ -271,7 +265,6 @@ public class GameLogic {
     // Called when a voting is not successful, and a new vote has to be done
     public void reVote() {
 
-
     }
 
     // Checks the victory conditions of the game and returns a corresponding integer. 1 is returned
@@ -282,10 +275,10 @@ public class GameLogic {
         int mafiaInGame = 0;
         int civillianInGame = 0;
         for(Player p : playersInGame) {
-            if(p.getRole().getTeam() == "mafia") {
+            if(p.getRole().getTeam().equals("mafia")) {
                 mafiaInGame += 1;
             }
-            if(p.getRole().getTeam() == "civillian") {
+            if(p.getRole().getTeam().equals("civillian")) {
                 civillianInGame +=1;
             }
 
