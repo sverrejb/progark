@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
@@ -25,9 +27,11 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = GameFragment.class.getSimpleName();
 
-    IPlayStoreActivity mPlayStoreActivity;
-
     Button btnShowRole;
+
+    LinearLayout voteLayout;
+
+    TextView txtVote;
 
 
     IClientController clientController;
@@ -36,18 +40,15 @@ public class GameFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_game, container, false);
         btnShowRole = (Button)view.findViewById(R.id.btnShowRole);
+        txtVote = (TextView)view.findViewById(R.id.txtVoteTxt);
+        voteLayout = (LinearLayout)view.findViewById(R.id.linearLayoutVote);
+
         return view;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mPlayStoreActivity = (IPlayStoreActivity) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement " + IPlayStoreActivity.class.getSimpleName());
-        }
-
     }
 
 
@@ -71,6 +72,31 @@ public class GameFragment extends Fragment implements View.OnClickListener{
                 break;
         }
 
+    }
+
+
+
+    public void voteOn(final String[] toVoteIds){
+        voteLayout.removeAllViewsInLayout();
+
+        for (int i = 0; i < toVoteIds.length; i++) {
+            String name = clientController.getCommunicator().getNameFromId(toVoteIds[i]);
+            addButton(toVoteIds[i], name);
+        }
+    }
+
+    private void addButton(final String id, final String name){
+        Button myButton = new Button(getActivity());
+        myButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clientController.informSoftVote(id);
+            }
+        });
+        myButton.setText(name);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        voteLayout.addView(myButton, lp);
     }
 
     public void setClientController(IClientController clientController) {

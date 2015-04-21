@@ -87,7 +87,7 @@ public class ClientController implements IClientController{
         duplexCommunicator.sendMessageTo(e, serverId);
     }
 
-    private void informSoftVote(String cSoftVote){
+    public void informSoftVote(String cSoftVote){
         for (int i = 0; i < this.idPhaseTeamMates.length; i++) {
             Event e = new Event();
             e.type = Event.Type.SOFTVOTE;
@@ -98,6 +98,10 @@ public class ClientController implements IClientController{
         }
     }
 
+    @Override
+    public DuplexCommunicator getCommunicator() {
+        return duplexCommunicator;
+    }
 
 
     public void commit(String[] killed) {

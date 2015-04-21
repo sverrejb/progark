@@ -157,6 +157,15 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
         mMessageListeners.remove(messageListener);
     }
 
+    public String getNameFromId(String id){
+        for (int i = 0; i < participants.size(); i++) {
+            if(participants.get(i).getParticipantId().equals(id))
+                return participants.get(i).getDisplayName();
+        }
+
+        return null;
+    }
+
     // --------------------------
     // Getters and setters
     // --------------------------

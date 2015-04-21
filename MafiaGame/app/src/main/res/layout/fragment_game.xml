@@ -17,4 +17,19 @@
         android:text="Show my role"
         android:id="@+id/btnShowRole"
         android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Can vote on:"
+        android:id="@+id/txtVoteTxt"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutVote"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
 </LinearLayout>
