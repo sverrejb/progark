@@ -2,6 +2,11 @@ package progark.mafia.mafiagame.controller;
 
 import android.app.Activity;
 
+import android.app.FragmentTransaction;
+import android.util.Log;
+
+import com.google.android.gms.games.multiplayer.Participant;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -31,7 +36,6 @@ public class GameLogic {
     AbstractPhase currentPhase;
     boolean gameStarted;
 
-
     // These lists serve as storage for players that relate to different actions performed in Commits.
     // These can be extended as new phases or roles are created.
 
@@ -42,6 +46,7 @@ public class GameLogic {
     public static ArrayList<Player> saveList = new ArrayList<Player>();
 
 
+
 // Dette m� forandres p�
 //    public static void main(String[] args) {
 //        GameLogic gl = new GameLogic();
@@ -49,38 +54,22 @@ public class GameLogic {
 //        gl.initializeGameData();
 //    }
 
-
-
-
-
     // WeakRef so avoid weird mem leaks
     WeakReference<Activity> parentActivity;
 
     DuplexCommunicator communicator;
 
 
-    public GameLogic(Activity parent, DuplexCommunicator communicator, boolean isServer) {
-        parentActivity = new WeakReference<>(parent);
-        this.communicator = communicator;
+    public GameLogic(DuplexCommunicator communicator) {
 
-        if (isServer) {// Do stuff
+        ArrayList<Participant> participantsInGame = communicator.getParticipants();
 
+        for(Participant participant : participantsInGame) {
+            addPlayer(participant.getParticipantId(), participant.getDisplayName());
         }
 
+        startGame();
 
-        // Setup view
-
-        GameFragment gameFragment = new GameFragment();
-
-        FragmentTransaction transaction = parentActivity.get().getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack if needed
-        transaction.replace(R.id.fragment_placeholder, gameFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();
     }
 
     public void addVotingSystem(VotingSystem s) {
@@ -96,7 +85,6 @@ public class GameLogic {
         initializeGameData();
         gameStarted = true;
         beginNextPhase();
-
     }
 
 
@@ -114,19 +102,21 @@ public class GameLogic {
         // Create a list of all active phases sorted in the correct order (low number first);
         gamePhases = AbstractPhase.getActivePhasesInOrder();
 
-
         // Initialize all roles
         Civillian.getRoles().add(new Civillian(this));
-        AbstractRole.getRoles().add(new Mafia(this));
+        Mafia.getRoles().add(new Mafia(this));
         Doctor.getRoles().add(new Doctor(this));
 
 
         gamePhases = AbstractPhase.getActivePhasesInOrder();
-        System.out.print("Current active phases: ");
+        Log.i("### ACTIVE PHASES ###", "");
+        String phases = "";
+
         for(AbstractPhase x : gamePhases) {
-            System.out.print(x.getId() + " | ");
+            phases += " | " + x.getPhaseName();
         }
-        System.out.println();
+
+        Log.i("Phases: ", phases);
 
         connectRolesToPhase();
     }
@@ -139,7 +129,8 @@ public class GameLogic {
                 int randomPlayer = Randomizer.getRandomInt(0, unAssignedPlayers.size());
                 Player p = unAssignedPlayers.remove(randomPlayer);
                 p.assignRole(role.getId());
-                System.out.println("Player " + p.getName() + " got the role of " + role.getDisplayName());
+
+                Log.i("### ROLE ASSIGNED ###", p.getName() + " got the role of " + role.getDisplayName());
                 role.increaseNumberInPlay();
             }
         }
@@ -147,21 +138,25 @@ public class GameLogic {
     }
 
     public void addPlayer(String id, String name) {
+
         Player p = new Player(id, name);
         playersInGame.add(p);
+        Log.i("### PLAYER ADDED ###", p.getName() + " was added to game");
     }
 
     private void removePlayer(Player id) {
         int pos = PlayerArraySearcher.SearchArray(playersInGame, id);
-        playersInGame.remove(pos);
-
+        Player p = playersInGame.remove(pos);
+        Log.i("### REMOVED PLAYER ###", p.getName() );
     }
 
 
     // Method used to update all current tentative actions, such as killing off players and updating players
     // on progress. commitRound() should either be performed after all phases of a round has finished OR
     // on special occasions during the onePhaseEnd method in the phase class.
+
     public void commitRound() {
+        Log.i("### ROUND COMMIT ###", "Now commiting round and performing changes");
         for(Player p : saveList) {
             int savedIndex = PlayerArraySearcher.SearchArray(killList, p);
             if(savedIndex != -1) {
@@ -170,6 +165,7 @@ public class GameLogic {
         }
 
         for(Player p : killList) {
+            Log.i("### KILL PLAYER ###", "Player " + p.getName() + "will be killed!");
            // Perform method to kill player;
         }
 
@@ -182,9 +178,9 @@ public class GameLogic {
         assignPlayers();
 
         for(AbstractPhase x : AbstractPhase.getPhases()) {
-            System.out.println("Checking all roles of phase: " + x.getId());
+            Log.i("### CHECK ROLES ###", "Checking all roles of phase" + x.getId());
             for(String role : x.getParticipatingRoles()) {
-                System.out.println(role + " can participate in this phase");
+                Log.i("participate role", role + "can participate in this phase");
             }
         }
     }
@@ -197,9 +193,13 @@ public class GameLogic {
     public void beginNextRound() {
             if(checkVictoryConditions() == 1)
             {
+                gameStarted = false;
+
                 // Game over. Civillians win
             }
             else if (checkVictoryConditions() == -1) {
+                gameStarted = false;
+
                 // Game over. Mafia wins
             }
             else {
@@ -214,6 +214,7 @@ public class GameLogic {
             currentPhase = gamePhases.remove(0);
             System.out.println("Now beginning " + currentPhase.getId());
             currentPhase.onPhaseBegin();
+
         }
         else {
             beginNextRound();
@@ -222,7 +223,7 @@ public class GameLogic {
 
 
     // These methods are here to add and remove players from different lists.
-    // TODO: Add more general methods to add to list, so new methods for each seperate list does not need to be done
+    // TODO FOR FUTURE ITERATIONS: Add more general methods to add to list, so new methods for each seperate list does not need to be made
 
     public void addToKillList(Player p) {
         if(PlayerArraySearcher.SearchArray(killList, p) == -1) {
@@ -301,8 +302,6 @@ public class GameLogic {
             return 0;
         }
 
-
-
     }
 
 
@@ -336,6 +335,8 @@ public class GameLogic {
 
         }
 
+
+    // This can be safely deleted if it's redundant.
 
     public void createTestSetData() {
         Player p = new Player("ASJDOAJD", "Daniel");
