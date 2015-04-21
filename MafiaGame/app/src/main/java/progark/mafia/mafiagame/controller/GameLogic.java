@@ -1,15 +1,8 @@
 package progark.mafia.mafiagame.controller;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
-import progark.mafia.mafiagame.R;
-import progark.mafia.mafiagame.connection.DuplexCommunicator;
-import progark.mafia.mafiagame.fragments.GameFragment;
 import progark.mafia.mafiagame.models.Phases.AbstractPhase;
 import progark.mafia.mafiagame.models.Phases.CivillianPhase;
 import progark.mafia.mafiagame.models.Phases.MafiaPhase;
@@ -47,34 +40,8 @@ public class GameLogic {
 
 
 
+    public GameLogic() {
 
-    // WeakRef so avoid weird mem leaks
-    WeakReference<Activity> parentActivity;
-
-    DuplexCommunicator communicator;
-
-
-    public GameLogic(Activity parent, DuplexCommunicator communicator, boolean isServer) {
-        parentActivity = new WeakReference<>(parent);
-        this.communicator = communicator;
-
-        if (isServer) {// Do stuff
-        }
-
-
-        // Setup view
-
-        GameFragment gameFragment = new GameFragment();
-
-        FragmentTransaction transaction = parentActivity.get().getFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack if needed
-        transaction.replace(R.id.fragment_placeholder, gameFragment);
-        transaction.addToBackStack(null);
-
-        // Commit the transaction
-        transaction.commit();
     }
 
     public void generateRolesAndPhases() {

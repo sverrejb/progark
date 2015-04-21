@@ -26,7 +26,7 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
 
     GoogleApiClient googleApiClient;
     String roomId;
-    Participant[] participants;
+    ArrayList<Participant> participants;
 
     /**
      *
@@ -57,14 +57,12 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
                 listener.OnEventReceived(e);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    void sendMessage(Event e) {
+    public void sendMessage(Event e) {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
@@ -108,7 +106,7 @@ public class DuplexCommunicator implements RealTimeMessageReceivedListener {
         this.roomId = roomId;
     }
 
-    public void setParticipants(Participant[] participants) {
+    public void setParticipants(ArrayList<Participant> participants) {
         this.participants = participants;
     }
 }
