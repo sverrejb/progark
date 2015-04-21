@@ -18,11 +18,9 @@ public class CivillianPhase extends AbstractPhase {
         participateRoles.add("all");
         mandatory = true;
 
-
         // Uncomment this to allow the little girl to be a witness at observing if "littleGirl" is
         // a valid role
-
-        // observeRoles[0] = "LittleGirl";
+        // observeRoles.add("LittleGirl");
     }
 
     @Override
@@ -37,7 +35,7 @@ public class CivillianPhase extends AbstractPhase {
     }
 
     @Override
-    public void performAction(Player performer, Player target) {
+    public void performAction(Player[] performer, Player target) {
         gl.addToKillList(target);
 
     }

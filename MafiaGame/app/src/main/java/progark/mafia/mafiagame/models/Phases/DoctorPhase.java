@@ -31,7 +31,7 @@ public class DoctorPhase extends AbstractPhase {
     }
 
     @Override
-    public void performAction(Player performer, Player target) {
+    public void performAction(Player[] performer, Player target) {
         gl.addToKillList(target);
     }
 }

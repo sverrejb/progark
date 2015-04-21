@@ -1,11 +1,15 @@
 package progark.mafia.mafiagame.controller;
 
+import android.app.Activity;
+
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.models.Phases.AbstractPhase;
 import progark.mafia.mafiagame.models.Phases.CivillianPhase;
+import progark.mafia.mafiagame.models.Phases.DoctorPhase;
 import progark.mafia.mafiagame.models.Phases.MafiaPhase;
 import progark.mafia.mafiagame.models.Player;
 import progark.mafia.mafiagame.models.Roles.AbstractRole;
@@ -25,6 +29,7 @@ public class GameLogic {
     boolean includeGameMaster;
     ArrayList<AbstractPhase> gamePhases;
     AbstractPhase currentPhase;
+    boolean gameStarted;
 
 
     // These lists serve as storage for players that relate to different actions performed in Commits.
@@ -46,14 +51,53 @@ public class GameLogic {
 
 
 
-    public GameLogic(DuplexCommunicator duplexCommunicator) {
 
+
+    // WeakRef so avoid weird mem leaks
+    WeakReference<Activity> parentActivity;
+
+    DuplexCommunicator communicator;
+
+
+    public GameLogic(Activity parent, DuplexCommunicator communicator, boolean isServer) {
+        parentActivity = new WeakReference<>(parent);
+        this.communicator = communicator;
+
+        if (isServer) {// Do stuff
+
+        }
+
+
+        // Setup view
+
+        GameFragment gameFragment = new GameFragment();
+
+        FragmentTransaction transaction = parentActivity.get().getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack if needed
+        transaction.replace(R.id.fragment_placeholder, gameFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     public void addVotingSystem(VotingSystem s) {
         this.votingSystem = s;
     }
 
+    public boolean getGameStarted() {
+        return this.gameStarted;
+
+    }
+
+    public void startGame() {
+        initializeGameData();
+        gameStarted = true;
+        beginNextPhase();
+
+    }
 
 
     public void generateRolesAndPhases() {
@@ -63,6 +107,7 @@ public class GameLogic {
         //Initialize all phases
         AbstractPhase.getPhases().add(new CivillianPhase(this));
         AbstractPhase.getPhases().add(new MafiaPhase(this));
+        AbstractPhase.getPhases().add(new DoctorPhase(this));
 
         // ...
 
@@ -136,17 +181,33 @@ public class GameLogic {
         generateRolesAndPhases();
         assignPlayers();
 
-        for(AbstractPhase x :AbstractPhase.getPhases()) {
+        for(AbstractPhase x : AbstractPhase.getPhases()) {
             System.out.println("Checking all roles of phase: " + x.getId());
             for(String role : x.getParticipatingRoles()) {
                 System.out.println(role + " can participate in this phase");
             }
         }
-
-        beginNextPhase();
     }
 
 
+
+
+
+
+    public void beginNextRound() {
+            if(checkVictoryConditions() == 1)
+            {
+                // Game over. Civillians win
+            }
+            else if (checkVictoryConditions() == -1) {
+                // Game over. Mafia wins
+            }
+            else {
+                gamePhases = AbstractPhase.getActivePhasesInOrder();
+                beginNextRound();
+        }
+
+    }
 
     public void beginNextPhase() {
         if(!gamePhases.isEmpty()) {
@@ -155,7 +216,7 @@ public class GameLogic {
             currentPhase.onPhaseBegin();
         }
         else {
-            checkVictoryConditions();
+            beginNextRound();
         }
     }
 
@@ -196,8 +257,8 @@ public class GameLogic {
 
     // Called when a voting is successful and a majority vote for one player has been made.
 
-    public void voteComplete(Player target, Player performer) {
-        currentPhase.performAction(target, performer);
+    public void voteComplete(Player target, Player[] performer) {
+        currentPhase.performAction(performer, target);
         currentPhase.onPhaseEnd();
     }
 
