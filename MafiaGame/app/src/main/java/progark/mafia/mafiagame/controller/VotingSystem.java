@@ -1,5 +1,7 @@
 package progark.mafia.mafiagame.controller;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,6 +13,7 @@ import progark.mafia.mafiagame.models.Player;
  * Created by Magnus on 20.04.2015.
  */
 public class VotingSystem{
+    private static final String TAG = VotingSystem.class.getSimpleName();
 
     ArrayList<Player> playersAlive;         // All players that are still alive
     AbstractPhase phase;                    // The phase the game is in
@@ -59,9 +62,11 @@ public class VotingSystem{
             }
 
         }
-
+        Log.v(TAG, "Vote done: " + h);
+        // TODO NULL?
         gl.voteComplete(h, null);    // needs to send the player that got the majority of the votes
                                                 // null if more than one player voted, if only one player voted "doctor" he will be in the array..
+        gl.beginNextPhase();
     }
 
     // sends a message to all clients with a list with the IDs to all who can vote
@@ -92,6 +97,7 @@ public class VotingSystem{
         if(votes.containsKey(vote.fieldOne) && whoCanVote.size() > 0){
             votes.put(vote.fieldOne, votes.get(vote.fieldOne + 1));
             whoCanVote.remove(vote.fieldTwo[0]);
+            // todo what? countVotes når ferdig
             if(whoCanVote.size() > 0)
                 countVotes();
         }

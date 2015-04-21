@@ -31,12 +31,17 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
     Button btnShowRole;
 
+    Button btnSendVote;
+
+
     LinearLayout voteLayout;
 
     TextView txtVote;
 
 
     IClientController clientController;
+
+    String currentSoftVote = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +50,7 @@ public class GameFragment extends Fragment implements View.OnClickListener{
         btnShowRole = (Button)view.findViewById(R.id.btnShowRole);
         txtVote = (TextView)view.findViewById(R.id.txtVoteTxt);
         voteLayout = (LinearLayout)view.findViewById(R.id.linearLayoutVote);
+        btnSendVote = (Button)view.findViewById(R.id.btnSendVote);
 
         return view;
     }
@@ -61,6 +67,19 @@ public class GameFragment extends Fragment implements View.OnClickListener{
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.v(TAG, "onActivityCreated");
+
+        btnSendVote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentSoftVote != null) {
+                    clientController.informVotedOn(currentSoftVote);
+                    btnSendVote.setVisibility(View.GONE);
+                    txtVote.setVisibility(View.GONE);
+                    voteLayout.setVisibility(View.GONE);
+                    currentSoftVote = null;
+                }
+            }
+        });
 
 
         btnShowRole.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +103,9 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
 
     public void voteOn(ArrayList<String> toVoteIds){
+        txtVote.setVisibility(View.VISIBLE);
+        voteLayout.setVisibility(View.VISIBLE);
+
         Log.v(TAG, "voteOn");
         voteLayout.removeAllViewsInLayout();
 
@@ -93,12 +115,15 @@ public class GameFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+
     private void addButton(final String id, final String name){
         Button myButton = new Button(getActivity());
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnSendVote.setVisibility(View.VISIBLE);
                 clientController.informSoftVote(id);
+                currentSoftVote = id;
             }
         });
         myButton.setText(name);

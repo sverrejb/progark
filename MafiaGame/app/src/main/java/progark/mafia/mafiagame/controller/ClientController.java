@@ -80,13 +80,21 @@ public class ClientController implements IClientController{
      *
      * @param id
      */
-    private void informVotedOn(String id){
-        //todo update gui
+    public void informVotedOn(String id){
+        //gui updated itself
 
         Event e = new Event();
         e.type = Event.Type.VOTED;
         e.fieldOne = id;
+        e.fieldTwo = new String[1];
+        e.fieldTwo[0] = getCommunicator().getMe();
         duplexCommunicator.sendMessageTo(e, serverId);
+
+
+        // tear down data
+        this.idPhaseTeamMates = null;
+        otherPlayersSoftVote = null;
+        playersToVoteOn = null;
     }
 
     public void informSoftVote(String cSoftVote){

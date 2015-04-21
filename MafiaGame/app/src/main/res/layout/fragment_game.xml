@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Can vote on:"
+        android:visibility="gone"
         android:id="@+id/txtVoteTxt"
         android:layout_gravity="center_horizontal" />
 
@@ -32,4 +33,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show my role"
+        android:visibility="gone"
+        android:id="@+id/btnSendVote"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
