@@ -9,28 +9,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
 
 import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.activities.IPlayStoreActivity;
+import progark.mafia.mafiagame.controller.IClientController;
 import progark.mafia.mafiagame.utils.Constants;
 
 /**
  * Created by PerØyvind on 23/03/2015.
  */
-public class GameFragment extends Fragment implements
-        View.OnClickListener{
+public class GameFragment extends Fragment implements View.OnClickListener{
 
     private static final String TAG = GameFragment.class.getSimpleName();
 
     IPlayStoreActivity mPlayStoreActivity;
 
+    Button btnShowRole;
+
+
+    IClientController clientController;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_game, container, false);
-
+        btnShowRole = (Button)view.findViewById(R.id.btnShowRole);
         return view;
     }
 
@@ -45,31 +50,30 @@ public class GameFragment extends Fragment implements
 
     }
 
-    /**
-     * Handles Google Play Services resolution callbacks.
-     */
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        btnShowRole.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity().getApplicationContext(), clientController.getRole(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btnFindPlayers:
-                if(!mPlayStoreActivity.getConnectionStatus()) {
-                    Log.v(TAG, "Google API not connected");
-                    return;
-                }
+            case R.id.btnShowRole:
 
-                // launch the player selection screen
-                // minimum: 1 other player; maximum: 3 other players
-                Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mPlayStoreActivity.getGoogleApiClient(), 1, 3);
-                getActivity().startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_PLAYERS);
                 break;
         }
 
     }
 
+    public void setClientController(IClientController clientController) {
+        this.clientController = clientController;
+    }
 }

@@ -17,7 +17,7 @@ import progark.mafia.mafiagame.fragments.GameFragment;
 /**
  * Created by Perÿyvind on 21/04/2015.
  */
-public class ClientController {
+public class ClientController implements IClientController{
     private static final String TAG = ClientController.class.getSimpleName();
 
     private String serverId;
@@ -127,6 +127,8 @@ public class ClientController {
         Log.v(TAG, "Client is starting!");
         GameFragment gameFragment = new GameFragment();
 
+        gameFragment.setClientController(this);
+
         FragmentTransaction transaction = activity.get().getFragmentManager().beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,
@@ -148,5 +150,10 @@ public class ClientController {
 
     public void setServerId(String serverId) {
         this.serverId = serverId;
+    }
+
+    @Override
+    public String getRole() {
+        return role;
     }
 }
