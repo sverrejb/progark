@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.games.Games;
 
+import java.util.ArrayList;
+
 import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.activities.IPlayStoreActivity;
 import progark.mafia.mafiagame.controller.IClientController;
@@ -76,12 +78,12 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
 
 
-    public void voteOn(final String[] toVoteIds){
+    public void voteOn(ArrayList<String> toVoteIds){
         voteLayout.removeAllViewsInLayout();
 
-        for (int i = 0; i < toVoteIds.length; i++) {
-            String name = clientController.getCommunicator().getNameFromId(toVoteIds[i]);
-            addButton(toVoteIds[i], name);
+        for (int i = 0; i < toVoteIds.size(); i++) {
+            String name = clientController.getCommunicator().getNameFromId(toVoteIds.get(i));
+            addButton(toVoteIds.get(i), name);
         }
     }
 

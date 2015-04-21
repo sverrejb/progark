@@ -71,13 +71,6 @@ public class GameController implements IMessageListener{
         }
     }
 
-    /**
-     * Run after constructor
-     */
-    public void start(){
-
-    }
-
     @Override
     public void OnEventReceived(Event e) {
         // Check type and pipe forward.

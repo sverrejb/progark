@@ -176,20 +176,19 @@ public class GameLogic {
 
 
     public void beginNextRound() {
-            if(checkVictoryConditions() == 1)
-            {
-                gameStarted = false;
+        if(checkVictoryConditions() == 1) {
+            gameStarted = false;
 
-                // Game over. Civillians win
-            }
-            else if (checkVictoryConditions() == -1) {
-                gameStarted = false;
+            // Game over. Civillians win
+        }
+        else if (checkVictoryConditions() == -1) {
+            gameStarted = false;
 
-                // Game over. Mafia wins
-            }
-            else {
-                gamePhases = AbstractPhase.getActivePhasesInOrder();
-                beginNextRound();
+            // Game over. Mafia wins
+        }
+        else {
+            gamePhases = AbstractPhase.getActivePhasesInOrder();
+            beginNextRound();
         }
 
     }

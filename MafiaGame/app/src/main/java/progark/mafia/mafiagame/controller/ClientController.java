@@ -30,6 +30,8 @@ public class ClientController implements IClientController{
 
     String me;
 
+    GameFragment gameFragment;
+
     // Alive participants for this round. Set to all start players minus your self.
     private ArrayList<String> aliveParticipantsIds;
 
@@ -62,8 +64,8 @@ public class ClientController implements IClientController{
             playersToVoteOn.remove(idPhaseTeamMates[i]);
         }
 
-
-        // todo update gui
+        // Update gui
+        gameFragment.voteOn(playersToVoteOn);
     }
 
     Map<String, String> otherPlayersSoftVote;
@@ -129,7 +131,7 @@ public class ClientController implements IClientController{
      */
     public void start(){
         Log.v(TAG, "Client is starting!");
-        GameFragment gameFragment = new GameFragment();
+        gameFragment = new GameFragment();
 
         gameFragment.setClientController(this);
 
