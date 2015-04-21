@@ -1,15 +1,12 @@
 package progark.mafia.mafiagame;
 
-import android.content.Intent;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import progark.mafia.mafiagame.activities.BasePlayStoreActivity;
+import progark.mafia.mafiagame.fragments.MainMenuFragment;
 
 
 public class Main extends BasePlayStoreActivity {
@@ -20,6 +17,19 @@ public class Main extends BasePlayStoreActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+                MainMenuFragment gameFragment = new MainMenuFragment();
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack if needed
+        transaction.replace(R.id.fragment_placeholder, gameFragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
     }
 
 

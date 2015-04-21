@@ -66,7 +66,6 @@ public class GameController implements IMessageListener{
         // Check type and pipe forward.
         // If GameLogic then also server
 
-        Log.v(TAG, "RECEIVED: " + e.msg);
     }
 
     public DuplexCommunicator getCommunicator() {
