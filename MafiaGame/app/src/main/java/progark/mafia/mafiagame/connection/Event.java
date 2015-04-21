@@ -6,5 +6,13 @@ import java.io.Serializable;
  * Created by PerØyvind on 23/03/2015.
  */
 public class Event implements Serializable {
-    public String msg;
+
+    public Type type;
+
+    public String fieldOne;
+    public String[] fieldTwo;
+
+    enum Type {
+        SETUP, ROLE, VOTE, COMMIT, VOTED, SOFTVOTE, VICTORY
+    }
 }
