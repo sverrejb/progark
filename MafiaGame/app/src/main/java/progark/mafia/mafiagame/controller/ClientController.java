@@ -60,10 +60,15 @@ public class ClientController implements IClientController{
         this.idPhaseTeamMates = idPhaseTeamMates;
         otherPlayersSoftVote = new HashMap<>();
 
-        // Set players to vote on. Everyone in aliveParticipantsIds minus idPhaseTeamMates
         playersToVoteOn = new ArrayList<>(aliveParticipantsIds);
-        for (int i = 0; i < idPhaseTeamMates.length; i++) {
-            playersToVoteOn.remove(idPhaseTeamMates[i]);
+
+        if(isCivilianPhase) {
+
+        } else {
+            // Set players to vote on. Everyone in aliveParticipantsIds minus idPhaseTeamMates
+            for (int i = 0; i < idPhaseTeamMates.length; i++) {
+                playersToVoteOn.remove(idPhaseTeamMates[i]);
+            }
         }
 
         // Update gui
@@ -130,11 +135,11 @@ public class ClientController implements IClientController{
             // todo Check am I killed? If so show it.
         }
 
-        if(isCivilianPhase){
+        //if(isCivilianPhase){
             // todo start grafisk
             // todo er implisitt vote process. Returner hvem man velger.
             // todo burde egentlig her vente på startVotingProcess event fra server som da skifer logikken til oppførselen
-        }
+        //}
     }
 
     public void victory(String winnerTeam){

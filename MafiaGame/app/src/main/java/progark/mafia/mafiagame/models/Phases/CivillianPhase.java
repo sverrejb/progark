@@ -44,7 +44,7 @@ public class CivillianPhase extends AbstractPhase {
     }
 
     @Override
-    public void onPhaseBegin() {
-        gl.commitRound();
+    public boolean onPhaseBegin() {
+        return gl.commitRound();
     }
 }

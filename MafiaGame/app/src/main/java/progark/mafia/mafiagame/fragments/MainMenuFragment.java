@@ -81,7 +81,7 @@ public class MainMenuFragment extends Fragment implements
 
                 // launch the player selection screen
                 // minimum: 1 other player; maximum: 3 other players
-                Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mPlayStoreActivity.getGoogleApiClient(), 1, 3);
+                Intent intent = Games.RealTimeMultiplayer.getSelectOpponentsIntent(mPlayStoreActivity.getGoogleApiClient(), 1, 7);
                 getActivity().startActivityForResult(intent, Constants.REQUEST_CODE_SELECT_PLAYERS);
                 break;
         }

@@ -195,7 +195,6 @@ public abstract class BasePlayStoreActivity extends ActionBarActivity implements
             case Constants.REQUEST_CODE_WAITING_ROOM:
                 if (resultCode == Activity.RESULT_OK) {
                     Log.v(TAG, "Time to start the game!");
-                    //todo swtich fragment to game fragment
                     // (start game)
 
                     duplexCommunicator.setParticipants(mParticipants);

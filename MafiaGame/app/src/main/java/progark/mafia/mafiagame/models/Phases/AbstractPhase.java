@@ -137,8 +137,9 @@ public abstract class AbstractPhase implements Comparable<AbstractPhase>{
 
     // Parent method that fires when the phase begins. Add any code to any child that requires some kind
     // of check here.
-    public void onPhaseBegin() {
-
+    // if true, then continue, if not game has ended
+    public boolean onPhaseBegin() {
+        return true;
     }
 
     // Parent method that fires when the phase ends. Add any code to any child that requires som kind

@@ -142,7 +142,7 @@ public class GameLogic {
     // on progress. commitRound() should either be performed after all phases of a round has finished OR
     // on special occasions during the onePhaseEnd method in the phase class.
 
-    public void commitRound() {
+    public boolean commitRound() {
         Log.i("### ROUND COMMIT ###", "Now commiting round and performing changes");
         for(Player p : saveList) {
             Log.v(TAG, "Saving: " + p.getName());
@@ -169,6 +169,34 @@ public class GameLogic {
 
         killList.clear();
         saveList.clear();
+
+        Event winE = null;
+        // Check winning or not
+        if(checkVictoryConditions() == 1) {
+            gameStarted = false;
+            // Game over. Civillians win
+
+            winE = new Event();
+            winE.type = Event.Type.VICTORY;
+            winE.fieldOne = "Civilians";
+        }
+        else if (checkVictoryConditions() == -1) {
+            gameStarted = false;
+            // Game over. Mafia wins
+
+            winE = new Event();
+            winE.type = Event.Type.VICTORY;
+            winE.fieldOne = "Mafia";
+        }
+
+        if (winE != null) {
+            getCommunicator().sendMessageToAll(winE);
+            return false;
+        }
+
+        return true;
+
+
     }
 
     public void initializeGameData() {
@@ -185,31 +213,21 @@ public class GameLogic {
 
 
     public void beginNextRound() {
-        if(checkVictoryConditions() == 1) {
-            gameStarted = false;
-
-            // Game over. Civillians win
-        }
-        else if (checkVictoryConditions() == -1) {
-            gameStarted = false;
-
-            // Game over. Mafia wins
-        }
-        else {
-            gamePhases = AbstractPhase.getActivePhasesInOrder();
-            beginNextRound();
-        }
-
+        gamePhases = AbstractPhase.getActivePhasesInOrder();
+        beginNextRound();
     }
 
     public void beginNextPhase() {
         if(!gamePhases.isEmpty()) {
             currentPhase = gamePhases.remove(0);
             System.out.println("Now beginning " + currentPhase.getId());
-            currentPhase.onPhaseBegin();
+            boolean cont = currentPhase.onPhaseBegin();
 
+            if(!cont){
+                Log.v(TAG, "Game has ended");
+                return;
+            }
 
-            // todo start vote here
             votingSystem = new VotingSystem(this, playersInGame, currentPhase);
         }
         else {
