@@ -53,8 +53,6 @@ public class GameLogic {
 //        gl.initializeGameData();
 //    }
 
-      // WeakRef so avoid weird mem leaks
-    WeakReference<Activity> parentActivity;
 
     DuplexCommunicator communicator;
 
@@ -208,6 +206,7 @@ public class GameLogic {
             currentPhase = gamePhases.remove(0);
             System.out.println("Now beginning " + currentPhase.getId());
             currentPhase.onPhaseBegin();
+
 
         }
         else {
