@@ -15,6 +15,7 @@ import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.connection.Event;
 import progark.mafia.mafiagame.fragments.GameFragment;
+import progark.mafia.mafiagame.fragments.KilledFragment;
 
 /**
  * Created by Perï¿½yvind on 21/04/2015.
@@ -39,6 +40,8 @@ public class ClientController implements IClientController{
 
     private boolean isCivilianPhase = false;
 
+    private boolean isKilled = false;
+
     public ClientController(Activity activity, DuplexCommunicator duplexCommunicator){
         this.activity = new WeakReference<>(activity);
         this.duplexCommunicator = duplexCommunicator;
@@ -57,6 +60,8 @@ public class ClientController implements IClientController{
     ArrayList<String> playersToVoteOn;
     String[] idPhaseTeamMates;
     public void startVotingProcess(String[] idPhaseTeamMates){
+        if(isKilled) return;
+
         this.idPhaseTeamMates = idPhaseTeamMates;
         otherPlayersSoftVote = new HashMap<>();
 
@@ -77,6 +82,8 @@ public class ClientController implements IClientController{
 
     Map<String, String> otherPlayersSoftVote;
     public void otherPlayersSoftVote(String playerId, String playerVoteOn){
+        if(isKilled) return;
+
         otherPlayersSoftVote.put(playerId, playerVoteOn);
 
         // todo update gui
@@ -126,20 +133,26 @@ public class ClientController implements IClientController{
 
 
     public void commit(String[] killed) {
-        isCivilianPhase = !isCivilianPhase; // After first time receive then it is civilian phase
+        if(isKilled) return;
 
+        isCivilianPhase = !isCivilianPhase; // After first time receive then it is civilian phase
 
         // Remove killed
         for (int i = 0; i < killed.length; i++) {
             aliveParticipantsIds.remove(killed[0]);
-            // todo Check am I killed? If so show it.
-        }
 
-        //if(isCivilianPhase){
-            // todo start grafisk
-            // todo er implisitt vote process. Returner hvem man velger.
-            // todo burde egentlig her vente på startVotingProcess event fra server som da skifer logikken til oppførselen
-        //}
+            // Am I killed? If so show it.
+            if(killed[i].equals(getCommunicator().getMe())){
+                isKilled = true;
+                KilledFragment killedFragment = new KilledFragment();
+
+                FragmentTransaction transaction = activity.get().getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_placeholder, killedFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                gameFragment = null;
+            }
+        }
     }
 
     public void victory(String winnerTeam){
