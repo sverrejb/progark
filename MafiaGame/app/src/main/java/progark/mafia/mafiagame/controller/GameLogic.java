@@ -24,6 +24,7 @@ import progark.mafia.mafiagame.utils.Randomizer;
  * Created by Daniel on 10.03.2015.
  */
 public class GameLogic {
+    private static final String TAG = GameLogic.class.getSimpleName();
 
     ArrayList<Player> playersInGame = new ArrayList<>();
 
@@ -144,16 +145,27 @@ public class GameLogic {
     public void commitRound() {
         Log.i("### ROUND COMMIT ###", "Now commiting round and performing changes");
         for(Player p : saveList) {
+            Log.v(TAG, "Saving: " + p.getName());
             int savedIndex = PlayerArraySearcher.SearchArray(killList, p);
             if(savedIndex != -1) {
                 killList.remove(p);
             }
         }
 
+        String[] toKill = new String[killList.size()];
+        int c = 0;
+        Log.i(TAG, "### KILL PLAYER ###");
         for(Player p : killList) {
-            Log.i("### KILL PLAYER ###", "Player " + p.getName() + "will be killed!");
-           // Perform method to kill player;
+            Log.v(TAG, "Killing: " + p.getName());
+            toKill[c++] = p.getId();
+            playersInGame.remove(p);
         }
+
+        Event e = new Event();
+        e.type = Event.Type.COMMIT;
+        e.fieldTwo = toKill;
+
+        getCommunicator().sendMessageToAll(e);
 
         killList.clear();
         saveList.clear();
@@ -227,7 +239,6 @@ public class GameLogic {
         if(PlayerArraySearcher.SearchArray(saveList, p) == -1) {
             saveList.add(p);
         }
-
     }
 
     public void removeFromSaveList(Player p) {

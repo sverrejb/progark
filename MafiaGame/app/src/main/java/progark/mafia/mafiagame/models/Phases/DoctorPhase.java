@@ -14,7 +14,7 @@ public class DoctorPhase extends AbstractPhase {
 
     public DoctorPhase(GameLogic gl) {
         super(gl, PHASE_ID, PHASE_NAME, ORDER);
-        participateRoles.add("mafia");
+        participateRoles.add("doctor");
         mandatory = true;
     }
 
@@ -32,6 +32,6 @@ public class DoctorPhase extends AbstractPhase {
 
     @Override
     public void performAction(Player[] performer, Player target) {
-        gl.addToKillList(target);
+        gl.addToSaveList(target);
     }
 }

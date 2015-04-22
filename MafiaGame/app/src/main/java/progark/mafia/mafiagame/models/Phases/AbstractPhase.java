@@ -114,7 +114,7 @@ public abstract class AbstractPhase implements Comparable<AbstractPhase>{
         activeArray = activePhases.toArray(activeArray);
         System.out.println(activeArray);
         Arrays.sort(activeArray, new ComparePhases());
-        activePhases = new ArrayList<AbstractPhase>(Arrays.asList(activeArray));
+        activePhases = new ArrayList<>(Arrays.asList(activeArray));
         return activePhases;
 
     }

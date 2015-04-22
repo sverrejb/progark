@@ -40,16 +40,22 @@ public class VotingSystem{
 
     // List of players in, list of eligible players out
     private void sortVotersOnCurrentPhase(){
+        Log.v(TAG, "Sorting roles");
 
-        for (int i = 0; i < playersAlive.size(); i++){
-            if(phase.getParticipatingRoles().contains(playersAlive.get(i).getRole().getId())) {
-                whoCanVote.put(playersAlive.get(i).getId(), playersAlive.get(i));
-            }
-
-            // adds all player IDs to the hashmap
-            votes.put(playersAlive.get(i).getId(), 0);
+        for (int i = 0; i < phase.getParticipatingRoles().size(); i++) {
+            Log.v(TAG, "Phase: " + phase.getParticipatingRoles().get(i));
         }
 
+        for (int i = 0; i < playersAlive.size(); i++){
+            if(phase.getParticipatingRoles().contains("all") || // All alive are joining..
+                    phase.getParticipatingRoles().contains(playersAlive.get(i).getRole().getId())) { // Only specific are joining
+                whoCanVote.put(playersAlive.get(i).getId(), playersAlive.get(i));
+                Log.v(TAG, "Can vote: " + playersAlive.get(i).getRole().getDisplayName() + " " + playersAlive.get(i).getName());
+            }
+
+            // adds all player IDs to the hash map
+            votes.put(playersAlive.get(i).getId(), 0);
+        }
     }
 
     private void countVotes(){

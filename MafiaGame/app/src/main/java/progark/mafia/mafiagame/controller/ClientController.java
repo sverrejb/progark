@@ -127,11 +127,13 @@ public class ClientController implements IClientController{
         // Remove killed
         for (int i = 0; i < killed.length; i++) {
             aliveParticipantsIds.remove(killed[0]);
+            // todo Check am I killed? If so show it.
         }
 
         if(isCivilianPhase){
             // todo start grafisk
             // todo er implisitt vote process. Returner hvem man velger.
+            // todo burde egentlig her vente på startVotingProcess event fra server som da skifer logikken til oppførselen
         }
     }
 
