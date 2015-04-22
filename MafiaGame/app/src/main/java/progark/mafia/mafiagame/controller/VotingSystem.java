@@ -3,6 +3,7 @@ package progark.mafia.mafiagame.controller;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 import progark.mafia.mafiagame.connection.Event;
@@ -24,6 +25,8 @@ public class VotingSystem{
     HashMap<String, Integer> votes;         // vote count
     HashMap<String, String> whatWasVoted;   // Who voted on who
 
+    List<Player> performers;
+
     public VotingSystem(GameLogic gameLogic, ArrayList<Player> playersInGame, AbstractPhase phase){
         this.playersAlive = playersInGame;
         this.phase = phase;
@@ -36,6 +39,8 @@ public class VotingSystem{
         sortVotersOnCurrentPhase();
         initiateVoting();
 
+        performers = new ArrayList<>();
+
     }
 
     // List of players in, list of eligible players out
@@ -44,6 +49,7 @@ public class VotingSystem{
         for (int i = 0; i < playersAlive.size(); i++){
             if(phase.getParticipatingRoles().contains(playersAlive.get(i).getRole().getId())) {
                 whoCanVote.put(playersAlive.get(i).getId(), playersAlive.get(i));
+                performers.add(playersAlive.get(i));
             }
 
             // adds all player IDs to the hashmap
@@ -54,9 +60,12 @@ public class VotingSystem{
 
     private void countVotes(){
 
+        Player[] arrayOfPerformers = new Player[performers.size()];
+        arrayOfPerformers = performers.toArray(arrayOfPerformers);
+
         Log.v(TAG, "Counting votes");
         int highest = -1;
-        String h = "";
+        String targetID = "";
 
         for(String k : votes.keySet()){
             Log.v(TAG, k + ": " + votes.get(k));
@@ -65,14 +74,14 @@ public class VotingSystem{
         for(String k : votes.keySet()){
             if(votes.get(k) > highest) {
                 highest = votes.get(k);
-                h = k;
+                targetID = k;
             }
         }
 
-        Log.v(TAG, "Vote done: " + h);
-        // TODO NULL?
-        gl.voteComplete(h, null);    // needs to send the player that got the majority of the votes
-                                                // null if more than one player voted, if only one player voted "doctor" he will be in the array..
+        Log.v(TAG, "Vote done: " + targetID);
+
+        gl.voteComplete(targetID, arrayOfPerformers);
+
         gl.beginNextPhase();
     }
 
@@ -98,7 +107,7 @@ public class VotingSystem{
         Log.v(TAG, "Voters informed");
     }
 
-    // wait on votes and initiate count when all votes have been received or time runs out.
+    // wait on votes and initiate count when all votes have been received.
     public void receiveVote(Event vote){
 
         // fieldOne: the target of the vote
@@ -111,8 +120,6 @@ public class VotingSystem{
             if(whoCanVote.size() <= 0)
                 countVotes();
         }
-        else //todo why this else? Is this case legit?
-            countVotes();
 
     }
 
