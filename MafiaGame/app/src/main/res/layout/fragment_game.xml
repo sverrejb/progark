@@ -26,6 +26,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Others have voted on:"
+        android:visibility="gone"
+        android:id="@+id/txtSoftVoteInfo"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Others have voted on:"
+        android:visibility="gone"
+        android:id="@+id/txtSoftVote"
+        android:layout_gravity="center_horizontal" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

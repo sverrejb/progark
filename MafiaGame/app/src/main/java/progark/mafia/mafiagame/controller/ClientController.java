@@ -86,7 +86,12 @@ public class ClientController implements IClientController{
 
         otherPlayersSoftVote.put(playerId, playerVoteOn);
 
-        // todo update gui
+        // update gui
+        ArrayList<String> sVotes = new ArrayList<>();
+        for(String s : otherPlayersSoftVote.values())
+            sVotes.add(s);
+
+        gameFragment.showSoftVotes(sVotes);
     }
 
     /**

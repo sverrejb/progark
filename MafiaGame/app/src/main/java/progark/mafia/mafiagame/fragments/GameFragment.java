@@ -38,6 +38,8 @@ public class GameFragment extends Fragment implements View.OnClickListener{
 
     TextView txtVote;
 
+    TextView txtSoftVotes;
+    TextView txtSoftVotesInfo;
 
     IClientController clientController;
 
@@ -51,6 +53,8 @@ public class GameFragment extends Fragment implements View.OnClickListener{
         txtVote = (TextView)view.findViewById(R.id.txtVoteTxt);
         voteLayout = (LinearLayout)view.findViewById(R.id.linearLayoutVote);
         btnSendVote = (Button)view.findViewById(R.id.btnSendVote);
+        txtSoftVotes = (TextView)view.findViewById(R.id.txtSoftVote);
+        txtSoftVotesInfo = (TextView)view.findViewById(R.id.txtSoftVoteInfo);
 
         return view;
     }
@@ -77,6 +81,7 @@ public class GameFragment extends Fragment implements View.OnClickListener{
                     txtVote.setVisibility(View.GONE);
                     voteLayout.setVisibility(View.GONE);
                     currentSoftVote = null;
+                    showSoftVotes(null);
                 }
             }
         });
@@ -111,6 +116,23 @@ public class GameFragment extends Fragment implements View.OnClickListener{
         for (int i = 0; i < toVoteIds.size(); i++) {
             String name = clientController.getCommunicator().getNameFromId(toVoteIds.get(i));
             addButton(toVoteIds.get(i), name);
+        }
+    }
+
+    public void showSoftVotes(ArrayList<String> sVotes) {
+        if(sVotes == null){
+            txtSoftVotesInfo.setVisibility(View.GONE);
+            txtSoftVotes.setVisibility(View.GONE);
+            txtSoftVotes.setText("");
+        } else {
+
+            String txt = "";
+            for(String s : sVotes)
+                txt += s + "\n";
+
+            txtSoftVotesInfo.setVisibility(View.VISIBLE);
+            txtSoftVotes.setVisibility(View.VISIBLE);
+            txtSoftVotes.setText(txt);
         }
     }
 
