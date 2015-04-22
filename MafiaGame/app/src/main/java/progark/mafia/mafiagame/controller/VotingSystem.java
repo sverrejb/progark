@@ -45,23 +45,30 @@ public class VotingSystem{
             if(phase.getParticipatingRoles().contains(playersAlive.get(i).getRole().getId())) {
                 whoCanVote.put(playersAlive.get(i).getId(), playersAlive.get(i));
             }
-            votes.put(playersAlive.get(i).getId(), 0); // adds all player IDs to the hashmap
+
+            // adds all player IDs to the hashmap
+            votes.put(playersAlive.get(i).getId(), 0);
         }
 
     }
 
     private void countVotes(){
 
+        Log.v(TAG, "Counting votes");
         int highest = -1;
         String h = "";
 
         for(String k : votes.keySet()){
-            if(votes.get(k)> highest) {
+            Log.v(TAG, k + ": " + votes.get(k));
+        }
+
+        for(String k : votes.keySet()){
+            if(votes.get(k) > highest) {
                 highest = votes.get(k);
                 h = k;
             }
-
         }
+
         Log.v(TAG, "Vote done: " + h);
         // TODO NULL?
         gl.voteComplete(h, null);    // needs to send the player that got the majority of the votes
@@ -71,12 +78,14 @@ public class VotingSystem{
 
     // sends a message to all clients with a list with the IDs to all who can vote
     private void initiateVoting(){
+        Log.v(TAG, "Initiate voting");
 
         String[] canVote = new String[whoCanVote.size()];
 
         int c = 0;
         for (String s : whoCanVote.keySet()) {
             canVote[c++] = s;
+            Log.v(TAG, "Players who can vote: " + s);
         }
 
         for (String s : whoCanVote.keySet()) {
@@ -86,6 +95,7 @@ public class VotingSystem{
 
             gl.getCommunicator().sendMessageTo(e, s);
         }
+        Log.v(TAG, "Voters informed");
     }
 
     // wait on votes and initiate count when all votes have been received or time runs out.
@@ -95,13 +105,13 @@ public class VotingSystem{
         // [] fieldTwo: index 0 = the vote performer
 
         if(votes.containsKey(vote.fieldOne) && whoCanVote.size() > 0){
-            votes.put(vote.fieldOne, votes.get(vote.fieldOne + 1));
+            votes.put(vote.fieldOne, votes.get(vote.fieldOne) + 1);
             whoCanVote.remove(vote.fieldTwo[0]);
-            // todo what? countVotes når ferdig
-            if(whoCanVote.size() > 0)
+            // If no more voters then count the votes
+            if(whoCanVote.size() <= 0)
                 countVotes();
         }
-        else
+        else //todo why this else? Is this case legit?
             countVotes();
 
     }
