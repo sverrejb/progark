@@ -101,7 +101,6 @@ public class GameFragment extends Fragment implements View.OnClickListener{
     }
 
 
-
     public void voteOn(ArrayList<String> toVoteIds){
         txtVote.setVisibility(View.VISIBLE);
         voteLayout.setVisibility(View.VISIBLE);

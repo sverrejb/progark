@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
+
     <!--<fragment
         class="progark.mafia.mafiagame.fragments.MainMenuFragment"
         android:id="@+id/fragment_placeholder"

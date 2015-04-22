@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import progark.mafia.mafiagame.GameOverFragment;
 import progark.mafia.mafiagame.R;
 import progark.mafia.mafiagame.connection.DuplexCommunicator;
 import progark.mafia.mafiagame.connection.Event;
 import progark.mafia.mafiagame.fragments.GameFragment;
 
 /**
- * Created by PerØyvind on 21/04/2015.
+ * Created by Perï¿½yvind on 21/04/2015.
  */
 public class ClientController implements IClientController{
     private static final String TAG = ClientController.class.getSimpleName();
@@ -131,6 +132,11 @@ public class ClientController implements IClientController{
 
     public void victory(String winnerTeam){
         // todo grafisk
+        GameOverFragment gameOverFragment = new GameOverFragment();
+
+        gameOverFragment.setClientController(this);
+        FragmentTransaction transaction = activity.get().getFragmentManager().beginTransaction();
+        transaction.replace()
     }
 
 
