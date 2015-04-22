@@ -95,7 +95,7 @@ public class GameOverFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        winningTeam.setText("THE" + mParamWinningTeam.toUpperCase() + "WON");
+        winningTeam.setText("THE " + mParamWinningTeam.toUpperCase() + " WON");
     }
 
     @Override
