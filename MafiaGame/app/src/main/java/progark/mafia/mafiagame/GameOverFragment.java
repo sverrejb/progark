@@ -34,14 +34,6 @@ public class GameOverFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private ClientController clientController;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GameOverFragment.
-     */
     public static GameOverFragment newInstance(String winning) {
         GameOverFragment fragment = new GameOverFragment();
         Bundle args = new Bundle();
