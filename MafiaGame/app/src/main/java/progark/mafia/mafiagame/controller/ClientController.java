@@ -2,6 +2,7 @@ package progark.mafia.mafiagame.controller;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.os.Bundle;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
@@ -135,12 +136,15 @@ public class ClientController implements IClientController{
     }
 
     public void victory(String winnerTeam){
-        // todo grafisk
-        GameOverFragment gameOverFragment = new GameOverFragment();
+        GameOverFragment gameOverFragment = GameOverFragment.newInstance(winnerTeam);
 
         gameOverFragment.setClientController(this);
+
         FragmentTransaction transaction = activity.get().getFragmentManager().beginTransaction();
-        transaction.replace()
+        transaction.replace(R.id.fragment_placeholder, gameOverFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+        gameFragment = null;
     }
 
 
