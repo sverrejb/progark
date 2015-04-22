@@ -100,6 +100,10 @@ public class ClientController implements IClientController{
 
     public void informSoftVote(String cSoftVote){
         for (int i = 0; i < this.idPhaseTeamMates.length; i++) {
+            // Do not inform soft vote to youreself
+            if(this.idPhaseTeamMates[i].equals(this.duplexCommunicator.getMe()))
+                continue;
+
             Event e = new Event();
             e.type = Event.Type.SOFTVOTE;
             e.fieldTwo = new String[2];

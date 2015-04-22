@@ -121,6 +121,7 @@ public class GameFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 btnSendVote.setVisibility(View.VISIBLE);
+                btnSendVote.setText("Send vote on: " + name);
                 clientController.informSoftVote(id);
                 currentSoftVote = id;
             }

@@ -96,7 +96,7 @@ public class GameController implements IMessageListener{
                         public void run() {
                             gameLogic.startGame();
                         }
-                    }, 5000);
+                    }, 3000);
                 }
                 break;
             case VOTE:
