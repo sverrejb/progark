@@ -2,7 +2,6 @@ package progark.mafia.mafiagame.controller;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.os.Bundle;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;

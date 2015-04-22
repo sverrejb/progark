@@ -114,9 +114,7 @@ public class GameController implements IMessageListener{
             case VICTORY:
                 clientController.victory(e.fieldOne);
                 break;
-
         }
-
     }
 
     public DuplexCommunicator getCommunicator() {

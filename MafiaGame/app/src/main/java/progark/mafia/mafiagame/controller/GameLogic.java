@@ -214,7 +214,7 @@ public class GameLogic {
 
     public void beginNextRound() {
         gamePhases = AbstractPhase.getActivePhasesInOrder();
-        beginNextRound();
+        beginNextPhase();
     }
 
     public void beginNextPhase() {
